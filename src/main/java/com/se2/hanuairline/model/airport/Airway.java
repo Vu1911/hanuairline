@@ -30,6 +30,7 @@ public class Airway extends DateAudit implements Cloneable {
     @NotNull
     private int distanceKm;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "airway")
     private Set<Flight> flight;
 
