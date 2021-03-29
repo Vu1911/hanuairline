@@ -29,10 +29,14 @@ public class AirwayService {
         return airwayRepository.findAll(pagingSort);
     }
 
-    public Airway findByArrivalAirportAndDepartureAirport (String arrivalAirport, String departureAirport){
-        Airway airwayData = airwayRepository.findDistinctByArrivalAirport_NameAndAndDepartureAirport_Name(arrivalAirport, departureAirport);
+    public Airway findByArrivalCityAndDepartureCity (String arrivalCity, String departureCity){
+        Optional<Airway> airwayData = airwayRepository.findByArrivalAirport_CityAndDepartureAirport_City(arrivalCity, departureCity);
 
-        return airwayData;
+        if(!airwayData.isPresent()){
+            return null;
+        }
+
+        return airwayData.get();
     }
 
     public Airway createAirway(AirwayPayload request){

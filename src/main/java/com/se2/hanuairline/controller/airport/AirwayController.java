@@ -42,13 +42,13 @@ public class AirwayController {
         }
     }
 
-    @GetMapping("/getById/{id}")
-    public ResponseEntity<?> getAirwayByArrivalAndDepartureName(@RequestParam(required = true) String arrivalAirport,
-                                                                @RequestParam(required = true) String departureAirport) {
-        Airway airwayData = airwayService.findByArrivalAirportAndDepartureAirport(arrivalAirport, departureAirport);
-
-        return new ResponseEntity<>(airwayData, HttpStatus.OK);
-    }
+//    @GetMapping("/getById/{id}")
+//    public ResponseEntity<?> getAirwayByArrivalAndDepartureName(@RequestParam(required = true) String arrivalAirport,
+//                                                                @RequestParam(required = true) String departureAirport) {
+//        Airway airwayData = airwayService.findByArrivalAirportAndDepartureAirport(arrivalAirport, departureAirport);
+//
+//        return new ResponseEntity<>(airwayData, HttpStatus.OK);
+//    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createAirway(@Valid @RequestBody AirwayPayload request) {
@@ -79,6 +79,17 @@ public class AirwayController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/findByCities")
+    public ResponseEntity<?> findByCities(@RequestParam(required = true) String departureCityName,
+                                           @RequestParam(required = true) String arrivalCityName){
+        Airway airway = airwayService.findByArrivalCityAndDepartureCity(arrivalCityName, departureCityName);
+
+        if(airway == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(airway, HttpStatus.OK);
     }
 
 }

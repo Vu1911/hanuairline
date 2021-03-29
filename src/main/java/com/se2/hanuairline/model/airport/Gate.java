@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "gate")
-public class Gate extends DateAudit implements Cloneable {
+public class Gate implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

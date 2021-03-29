@@ -16,5 +16,7 @@ public interface AirwayRepository extends JpaRepository<Airway, Long> {
 
     Optional<Airway> findByArrivalAirport_IdAndDepartureAirport_Id(long arrivalAirport_id, long depatureAirport_id);
 
+    Optional<Airway> findByArrivalAirport_CityAndDepartureAirport_City(String arrivalCity, String depatureCity);
+
     Optional<Airway> findById(Long id);
 }

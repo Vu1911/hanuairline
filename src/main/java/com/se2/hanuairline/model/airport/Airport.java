@@ -16,7 +16,7 @@ import java.util.Set;
                 "name"
         }),
 })
-public class Airport extends DateAudit implements Cloneable {
+public class Airport implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
