@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "airway")
-public class Airway extends DateAudit implements Cloneable {
+public class Airway implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +30,7 @@ public class Airway extends DateAudit implements Cloneable {
     @NotNull
     private int distanceKm;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "airway")
     private Set<Flight> flight;
 
