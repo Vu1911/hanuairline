@@ -7,6 +7,7 @@ import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.model.airport.Airway;
 import com.se2.hanuairline.model.airport.Gate;
 import com.se2.hanuairline.payload.FlightPayload;
+import com.se2.hanuairline.payload.SearchPayload;
 import com.se2.hanuairline.repository.FlightRepository;
 import com.se2.hanuairline.repository.airport.AirwayRepository;
 import com.se2.hanuairline.repository.airport.GateRepository;
@@ -33,8 +34,8 @@ public class FlightController {
     @Autowired
     private FlightService flightService;
 
-    @Autowired
-    private FlightRepository flightRepository;
+//    @Autowired
+//    private FlightRepository flightRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(com.se2.hanuairline.controller.user.UserController.class);
 
@@ -75,6 +76,16 @@ public class FlightController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/testSearch")
+    public ResponseEntity<?> searchOneWayFlights(@RequestBody SearchPayload searchPayload){
+        // form body parameter spring boot anotaion
+
+
+        flightService.searchOneWayFlights(searchPayload);
+        return new ResponseEntity<>(searchPayload,HttpStatus.OK);
+
     }
 
 //    @PutMapping("/updateById/{id}")

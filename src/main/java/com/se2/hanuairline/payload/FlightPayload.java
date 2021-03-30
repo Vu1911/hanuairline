@@ -16,7 +16,6 @@ import java.util.Set;
 public class FlightPayload {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long aircraft_id;

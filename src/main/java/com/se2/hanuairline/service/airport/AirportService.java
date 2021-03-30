@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -88,4 +89,26 @@ public class AirportService {
             return true;
         }
     }
+
+    public List<Airport> getAirportsByCityName(String cityName){
+
+        return null;
+    }
+
+    public Airport findAirportByName(String airportName){
+        return airportRepository.findAirportByName(airportName);
+    }
+
+
+
+    public boolean checkExistedByAirportName(String airportName){
+      Airport airportList =  airportRepository.findAirportByName(airportName);
+      return airportList==null;
+    }
+
+    public boolean checkExistedAirportsByCityName(String cityName){
+         List<Airport> airportList=   airportRepository.findAirportByCity(cityName);
+    return airportList.isEmpty();
+    }
+
 }

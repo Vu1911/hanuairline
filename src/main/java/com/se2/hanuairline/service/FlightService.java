@@ -1,18 +1,25 @@
 package com.se2.hanuairline.service;
 
 import com.se2.hanuairline.exception.InvalidInputValueException;
+import com.se2.hanuairline.exception.NoResultException;
+import com.se2.hanuairline.exception.ResourceNotFoundException;
 import com.se2.hanuairline.model.DiscountEvent;
 import com.se2.hanuairline.model.Flight;
+import com.se2.hanuairline.model.FlightDirection;
 import com.se2.hanuairline.model.FlightStatus;
 import com.se2.hanuairline.model.aircraft.Aircraft;
+import com.se2.hanuairline.model.airport.Airport;
 import com.se2.hanuairline.model.airport.Airway;
 import com.se2.hanuairline.model.airport.Gate;
 import com.se2.hanuairline.payload.FlightPayload;
+import com.se2.hanuairline.payload.SearchPayload;
 import com.se2.hanuairline.repository.DiscountEventRepository;
 import com.se2.hanuairline.repository.FlightRepository;
 import com.se2.hanuairline.repository.aircraft.AircraftRepository;
 import com.se2.hanuairline.repository.airport.AirwayRepository;
 import com.se2.hanuairline.repository.airport.GateRepository;
+import com.se2.hanuairline.service.airport.AirportService;
+import com.se2.hanuairline.service.airport.AirwayService;
 import com.se2.hanuairline.util.PaginationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +28,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,7 +49,10 @@ public class FlightService {
 
     @Autowired
     private GateRepository gateRepository;
-
+    @Autowired
+    private AirportService airportService;
+    @Autowired
+    private AirwayService airwayService;
     public Page<Flight> getAll(int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
         return flightRepository.findAll(pagingSort);
@@ -105,6 +117,63 @@ public class FlightService {
         Flight _flight = flightRepository.save(flight);
 
         return _flight;
+    }
+
+    public List<Flight> searchOneWayFlights(SearchPayload searchPayload) throws InvalidInputValueException, NoResultException {
+        FlightDirection flightDirection = searchPayload.getFlightDirection();
+        String inputDeparturePlace = searchPayload.getDepartureAirportOrCity();
+       String inputArrivalPlace =  searchPayload.getArrivalAirportOrCity();
+       Date arrivalDate = searchPayload.getArrivalTime();
+       Date departureDate = searchPayload.getDepartureTime();
+      int numberOfTravelers = searchPayload.getNumberOfTraveler();
+      Long travelClassId = searchPayload.getTravelClassId();
+//
+        boolean departurePlaceIsAirport = true;
+        boolean arrivalPlaceIsAirport = true;
+        List<Flight> flightList=null;
+        if(!airportService.checkExistedByAirportName(inputDeparturePlace)){
+            departurePlaceIsAirport =false;
+            // không có thành phố nào như vậy mà có chứa bất kì airport nào
+                if(!airportService.checkExistedAirportsByCityName(inputDeparturePlace)){
+                    throw new InvalidInputValueException(("Điền sai thông tin nơi đi: "+inputDeparturePlace));
+                }
+        }
+        if(!airportService.checkExistedByAirportName(inputArrivalPlace)){
+            arrivalPlaceIsAirport = false;
+            // không có thành phố nào như vậy mà có chứa bất kì airport nào
+            if(!airportService.checkExistedAirportsByCityName(inputArrivalPlace)){
+                throw new InvalidInputValueException(("Điền sai thông tin nơi đếm: "+inputArrivalPlace));
+            }
+        }
+
+        // nó cho mình 2 tên thành phố hoặc 2 tên airport
+        // case 1 : 2 tên airport
+
+        // bước 2 : kiểm tra có airway từ airport này đến airport kia không -> lấy được airway_id
+        // bước 3 : query Flight table để trả về những chuyến bay có airway_id như này
+        if(departurePlaceIsAirport&&arrivalPlaceIsAirport){
+            Airport departureAirport = airportService.findAirportByName(inputDeparturePlace);
+            Airport arrivalAirport = airportService.findAirportByName(inputArrivalPlace);
+           Airway airway =   airwayService.findByArrivalAirportIdAndDepartureAirportId(arrivalAirport.getId(),departureAirport.getId());
+            if(airway==null){
+                throw new NoResultException("Does not exist airway from : "+departureAirport.getName()+" to"+arrivalAirport.getName());
+            }
+            flightList = flightRepository.findFlightByAirway_Id(airway.getId());
+
+        }
+
+        // case 2 :tên 2 thành phố
+        // bước 1 : kiểm tra có airport nào thuộc 2 thành phố đó không -> trả về được thanhpho1[airports]+thanhpho2[airports]
+        // bước 2 : kiểm tra giữa các airport có tồn tại airway nào không -> nhận được 1 list airway
+        // bước 3 : query Flight table để trả về những chuyến bay có airway_id như này
+
+    Airway airwayLisT =    airwayRepository.findDistinctByArrivalAirport_NameAndAndDepartureAirport_Name(arrivalPlace,departurePlace);
+
+
+
+
+        return null;
+
     }
 
 
