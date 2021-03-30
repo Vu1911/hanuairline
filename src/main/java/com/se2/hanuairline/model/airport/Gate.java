@@ -23,7 +23,6 @@ public class Gate implements Cloneable {
     @JoinColumn(name = "airport_id")
     private Airport airport;
 
-    @NaturalId
     @NotBlank
     @NotNull
     private String name;

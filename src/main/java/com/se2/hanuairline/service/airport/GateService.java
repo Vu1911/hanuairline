@@ -34,7 +34,11 @@ public class GateService {
     }
 
     public Gate createGate(GatePayload request){
-        Optional<Gate> gateData = gateRepository.findByNameAndAirport_Id(request.getName(), request.getAirport_id());
+        Optional<Gate> gateData = gateRepository.findByNameAndAirport_IdAndIdNot(request.getName(), request.getAirport_id(), 0L);
+
+        if (gateData.isPresent()){
+            return null;
+        }
 
         if (gateData.isPresent()){
             return null;
@@ -60,7 +64,7 @@ public class GateService {
     }
 
     public Gate updateGate(Long id, GatePayload request){
-        Optional<Gate> gateData = gateRepository.findByNameAndAirport_Id(request.getName(), request.getAirport_id());
+        Optional<Gate> gateData = gateRepository.findByNameAndAirport_IdAndIdNot(request.getName(), request.getAirport_id(), id);
 
         if (gateData.isPresent()){
             return null;
