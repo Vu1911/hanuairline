@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/aircraftSeat")
@@ -36,7 +38,7 @@ public class AircraftSeatController {
     }
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<?> getAircraftSeatById(@PathVariable("id") long id) {
+    public ResponseEntity<?> getAircraftSeatById(@PathVariable("id") String id) {
         AircraftSeat aircraftSeat = aircraftSeatService.getAircraftSeatById(id);
 
         if(aircraftSeat != null){
@@ -46,5 +48,15 @@ public class AircraftSeatController {
         }
     }
 
+    @GetMapping("/getByAircraftId/{id}")
+    public ResponseEntity<?> getByAircraftId(@PathVariable("id") Long id) {
+        List<AircraftSeat> aircraftSeat = aircraftSeatService.getByAircrafId(id);
+
+        if(!aircraftSeat.isEmpty()){
+            return new ResponseEntity<>(aircraftSeat, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Check aircraftSeatId. Maybe logic error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

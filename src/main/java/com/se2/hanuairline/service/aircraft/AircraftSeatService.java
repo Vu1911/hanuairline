@@ -40,7 +40,7 @@ public class AircraftSeatService {
         return aircraftSeatRepository.findByAircraft_IdOrTravelClass_Id(aircraft_id, travelclass_id, pagingSort);
     }
 
-    public AircraftSeat getAircraftSeatById(long id){
+    public AircraftSeat getAircraftSeatById(String id){
         Optional<AircraftSeat> aircraftSeatData = aircraftSeatRepository.findById(id);
 
         if (aircraftSeatData.isPresent()) {
@@ -91,6 +91,10 @@ public class AircraftSeatService {
         } catch(Exception e){
             return false;
         }
+    }
+
+    public List<AircraftSeat> getByAircrafId(Long id){
+        return aircraftSeatRepository.findByAircraft_Id(id);
     }
 
     // get all the available seats that has not been booked for an aircraft with a specific flight

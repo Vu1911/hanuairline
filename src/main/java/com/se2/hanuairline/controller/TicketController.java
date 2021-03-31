@@ -3,6 +3,7 @@ package com.se2.hanuairline.controller;
 import com.se2.hanuairline.model.Ticket;
 import com.se2.hanuairline.payload.TicketPayload;
 import com.se2.hanuairline.repository.TicketRepository;
+import com.se2.hanuairline.service.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +22,8 @@ public class TicketController {
     @Autowired
     private TicketRepository ticketRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(com.se2.hanuairline.controller.user.UserController.class);
+    @Autowired
+    private TicketService ticketService;
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllTicket(@RequestParam(required = false) String tittle) {
@@ -55,9 +58,10 @@ public class TicketController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createTicket(@RequestBody TicketPayload request) {
+    public ResponseEntity<?> createTicket(@Valid @RequestBody TicketPayload request) {
         try {
-           return new ResponseEntity<>(null, HttpStatus.CREATED);
+            Ticket ticket = ticketService.createTicket(request);
+           return new ResponseEntity<>(ticket, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
