@@ -1,5 +1,7 @@
 package com.se2.hanuairline.controller;
 
+import com.se2.hanuairline.exception.InvalidInputValueException;
+import com.se2.hanuairline.exception.NoResultException;
 import com.se2.hanuairline.model.DiscountEvent;
 import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.FlightStatus;
@@ -78,13 +80,20 @@ public class FlightController {
         }
     }
 
-    @PostMapping("/testSearch")
+    @GetMapping("/test/Search")
     public ResponseEntity<?> searchOneWayFlights(@RequestBody SearchPayload searchPayload){
+        System.out.println("In controller");
         // form body parameter spring boot anotaion
+        ResponseEntity<?> responseEntity;
 
-
-//        flightService.searchOneWayFlights(searchPayload);
-        return new ResponseEntity<>(searchPayload,HttpStatus.OK);
+        try {
+            List<Flight> result =     flightService.searchOneWayFlights(searchPayload);
+            responseEntity = new ResponseEntity<>(result,HttpStatus.OK);
+        } catch (InvalidInputValueException e) {
+            responseEntity = new ResponseEntity<>(e.getMessage(),HttpStatus.EXPECTATION_FAILED);
+        } catch (NoResultException e) {
+            responseEntity = new ResponseEntity<>(e.getMessage(),HttpStatus.EXPECTATION_FAILED);        }
+        return responseEntity;
 
     }
 

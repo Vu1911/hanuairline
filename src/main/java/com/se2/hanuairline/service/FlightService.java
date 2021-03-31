@@ -120,33 +120,47 @@ public class FlightService {
         return _flight;
     }
 
-//    public List<Flight> searchOneWayFlights(SearchPayload searchPayload) throws InvalidInputValueException, NoResultException {
-//            // one way flight
-//
-//        // filter bằng location
-////        String inputDeparturePlace = searchPayload.getDepartureAirportOrCity();
-////        String inputArrivalPlace =  searchPayload.getArrivalAirportOrCity();
-//
-//        List<List<Flight>> filteredByLoactionFlights = this.filterByInputAndOutputLocation(searchPayload.getDepartureAirportOrCity(),searchPayload.getArrivalAirportOrCity());
-//
+    public List<Flight> searchOneWayFlights(SearchPayload searchPayload) throws InvalidInputValueException, NoResultException {
+            // one way flight
+        System.out.println("In Flight service");
+        // filter bằng location
+//        String inputDeparturePlace = searchPayload.getDepartureAirportOrCity();
+//        String inputArrivalPlace =  searchPayload.getArrivalAirportOrCity();
+
+        List<List<Flight>> filteredByLoactionFlights = this.filterByInputAndOutputLocation(searchPayload.getDepartureAirportOrCity(),searchPayload.getArrivalAirportOrCity());
+//      // stuck
+        System.out.println(filteredByLoactionFlights);
 //        Date arrivalDate = searchPayload.getArrivalTime();
 //        Date departureDate = searchPayload.getDepartureTime();
 //        int numberOfTravelers = searchPayload.getNumberOfTraveler();
 //        Long travelClassId = searchPayload.getTravelClassId();
-//    }
+
+        // filter by time
+        List<Flight> result  = new ArrayList<Flight>();
+        for(List<Flight> flights : filteredByLoactionFlights){
+
+            for(Flight flight : flights){
+                result.add(flight);
+            }
+
+        }
+        return result;
+    }
 
 
     private List<List<Flight>> filterByInputAndOutputLocation( String inputDeparturePlace,String inputArrivalPlace) throws InvalidInputValueException, NoResultException {
-
+    System.out.println("In filter");
 
 //
         boolean departurePlaceIsAirport = true;
         boolean arrivalPlaceIsAirport = true;
         List<List<Flight>> flightList=new ArrayList<List<Flight>>();
         if(!airportService.checkExistedByAirportName(inputDeparturePlace)){
+
             departurePlaceIsAirport =false;
             // không có thành phố nào như vậy mà có chứa bất kì airport nào
             if(!airportService.checkExistedAirportsByCityName(inputDeparturePlace)){
+
                 throw new InvalidInputValueException(("Điền sai thông tin nơi đi: "+inputDeparturePlace));
             }
         }
@@ -157,86 +171,104 @@ public class FlightService {
                 throw new InvalidInputValueException(("Điền sai thông tin nơi đến: "+inputArrivalPlace));
             }
         }
+        System.out.println("departure la airport ?" +departurePlaceIsAirport+"arrival is a airport"+arrivalPlaceIsAirport);
 
 
         // nó cho mình 2 tên thành phố hoặc 2 tên airport
-        // case 1 : 2 tên airport
+        // case 1 : 2 tên airport oke
 
         // bước 2 : kiểm tra có airway từ airport này đến airport kia không -> lấy được airway_id
         // bước 3 : query Flight table để trả về những chuyến bay có airway_id như này
         if(departurePlaceIsAirport&&arrivalPlaceIsAirport){
+            System.out.println("Both are airport");
             Airport departureAirport = airportService.findAirportByName(inputDeparturePlace);
             Airport arrivalAirport = airportService.findAirportByName(inputArrivalPlace);
+
             Airway airway =   airwayService.findByArrivalAirportIdAndDepartureAirportId(arrivalAirport.getId(),departureAirport.getId());
             if(airway==null){
-                throw new NoResultException("Does not exist airway from : "+departureAirport.getName()+" to"+arrivalAirport.getName());
+                throw new NoResultException("Does not exist airway from : 1stcase"+" to"+arrivalAirport.getName());
             }
             List<Flight> flights = flightRepository.findFlightByAirway_Id(airway.getId());
             flightList.add(flights);
 
         }
-        // case 2 :tên 2 thành phố
+        // case 2 :tên 2 thành phố oke
         // bước 1 : kiểm tra có airport nào thuộc 2 thành phố đó không -> trả về được thanhpho1[airports]+thanhpho2[airports]
         // bước 2 : kiểm tra giữa các airport có tồn tại airway nào không -> nhận được 1 list airway
         // bước 3 : query Flight table để trả về những chuyến bay có airway_id như này
-        else if((!departurePlaceIsAirport)&&!arrivalPlaceIsAirport){
+        else if((!departurePlaceIsAirport)&&(!arrivalPlaceIsAirport)){
+            System.out.println("departure is city , arrival is city");
             List<Airway> airwayList = new ArrayList<Airway>();
             List<Airport> departureAirportList = airportService.getAirportsByCityName(inputDeparturePlace);
             List<Airport> arrivalAirportList = airportService.getAirportsByCityName(inputArrivalPlace);
             if(departureAirportList.isEmpty()||arrivalAirportList.isEmpty()){
-                throw new NoResultException("Does not exist airway from "+inputDeparturePlace+" to "+inputArrivalPlace);
+                throw new NoResultException("Does not exist airway from 2ndcase"+ "+inputArrivalPlace");
             }
             for(Airport departureAirport : departureAirportList){
-
+                    System.out.println(departureAirport);
                 for(Airport arrivalAirport : arrivalAirportList){
+                    System.out.println(arrivalAirport);
                     Airway airway =    airwayService.findByArrivalAirportIdAndDepartureAirportId(arrivalAirport.getId(),departureAirport.getId());
-                    airwayList.add(airway);
+                    if(!airway.equals(null)){
+                        airwayList.add(airway);
+                    }
                 }
 
             }
-            List<List<Flight>> flights = new ArrayList<List<Flight>>();
+            System.out.println("airway list is empty ?"+airwayList.isEmpty());
+
             for(Airway airway : airwayList){
+                System.out.println("Airway_id :" +airway.getId());
                 List<Flight> flight=    flightRepository.findFlightByAirway_Id(airway.getId());
-                flights.add(flight);
+               System.out.println("No flight for the airway id ? "+flight.isEmpty());
+               for(Flight eachFlight: flight){
+                   System.out.println("Each flight :"+ eachFlight);
+               }
+                flightList.add(flight);
             }
 
 
         }
         //!!! với những flight có airway_Id như nhau cần có departure && arrival time khác nhau
 
-        // case 3 : departure place là thành phố arrival place là sân bay
+        // case 3 : departure place là thành phố arrival place là sân bay OK
         // bước 1 : kiểm tra có airport ở thành phố đó không -> nhận được List<Airport>
         // bước 2 : kiểm tra có airway từ Các airport ở thành phố đó đến airport này không-> List<Airway>
         // bước 3 : kiểm tra các chuyến bay có airway_id như thế
 
         else if((!departurePlaceIsAirport)&&arrivalPlaceIsAirport){
+            System.out.println("departure is city arrival is airport");
             List<Airway> airwayList = new ArrayList<Airway>();
             // tìm được các airport của  thành phố
             List<Airport> departureAirportList=  airportService.getAirportsByCityName(inputDeparturePlace);
             // tìm  airport
             Airport arrivalAirport = airportService.findAirportByName(inputArrivalPlace);
+
             // với arrival airport này thì có các đường bay nào từ các airport của thành phố
             for(Airport airport : departureAirportList){
                 Airway airway=   airwayService.findByArrivalAirportIdAndDepartureAirportId(arrivalAirport.getId(),airport.getId());
                 airwayList.add(airway);
             }
 
+
             for(Airway airway : airwayList){
+
                 List<Flight> flights=    flightRepository.findFlightByAirway_Id(airway.getId());
+
                 flightList.add(flights);
 
             }
 
         }
 
-        // case 4 : departure place là airport và arrival place là thành phố
+        // case 4 : departure place là airport và arrival place là thành phố OK
         else if(departurePlaceIsAirport&&!arrivalPlaceIsAirport){
-
+    System.out.println("departure is airport arrival is city");
             List<Airway> airwayList = new ArrayList<Airway>();
 
             List<Airport> arrivalAirportList=  airportService.getAirportsByCityName(inputArrivalPlace);
 
-            Airport departureAirport = airportService.findAirportByName(inputArrivalPlace);
+            Airport departureAirport = airportService.findAirportByName(inputDeparturePlace);
             for(Airport airport : arrivalAirportList){
                 Airway airway=   airwayService.findByArrivalAirportIdAndDepartureAirportId(airport.getId(),departureAirport.getId());
                 airwayList.add(airway);
@@ -253,7 +285,7 @@ public class FlightService {
 
 
 
-
+        System.out.println("filter result" +flightList.toString());
         return flightList;
 
     }

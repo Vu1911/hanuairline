@@ -8,8 +8,6 @@ import com.se2.hanuairline.util.PaginationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -91,24 +89,40 @@ public class AirportService {
     }
 
     public List<Airport> getAirportsByCityName(String cityName){
+        System.out.println("airport of "+cityName);
+        List<Airport> cityAirports = airportRepository.findAirportByCity(cityName);
+        System.out.println("City airport empty ? "+ cityAirports.isEmpty());
+        if(cityAirports.isEmpty()){
+            return null;
+        }
+        return cityAirports;
 
-        return airportRepository.findAirportByCity(cityName);
     }
 
     public Airport findAirportByName(String airportName){
-        return airportRepository.findAirportByName(airportName);
+
+        if(airportRepository.findAirportByName(airportName).isPresent()) {
+            return airportRepository.findAirportByName(airportName).get();
+        }
+        return null;
+
     }
 
 
 
     public boolean checkExistedByAirportName(String airportName){
-      Airport airportList =  airportRepository.findAirportByName(airportName);
-      return airportList==null;
+        System.out.println("In checkexiested by airport name"+airportName);
+      Optional<Airport> airportList =  airportRepository.findAirportByName(airportName);
+
+      return airportList.isPresent();
     }
 
     public boolean checkExistedAirportsByCityName(String cityName){
+        System.out.println("In checkedAirport by CityName"+cityName);
          List<Airport> airportList=   airportRepository.findAirportByCity(cityName);
-    return airportList.isEmpty();
+         System.out.println("Hi" +airportList);
+         System.out.println("airport is empty ?" + airportList.isEmpty());
+    return !airportList.isEmpty();
     }
 
 }

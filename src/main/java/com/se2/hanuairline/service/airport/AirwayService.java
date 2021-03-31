@@ -87,6 +87,7 @@ public class AirwayService {
 
     public Airway findByArrivalAirportIdAndDepartureAirportId(Long arrivalAirportId, Long departureAirportId){
      Optional<Airway> airway =   airwayRepository.findByArrivalAirport_IdAndDepartureAirport_Id(arrivalAirportId,departureAirportId);
+     System.out.println("In airway service");
       if(!airway.isPresent()){
           return null;
       }
