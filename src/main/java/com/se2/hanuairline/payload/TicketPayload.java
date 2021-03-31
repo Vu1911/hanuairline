@@ -11,28 +11,24 @@ import javax.validation.constraints.NotNull;
 
 public class TicketPayload {
 
-    @Id
     private Long id;
 
     private Long user_id;
 
     private Long flight_id;
 
-    private Long aircraftSeat_id;
+    private String aircraftSeat_id;
 
-    @NotNull
-    private String status; ;
+    private String status;
 
-    @NotBlank
-    @NotNull
-    private int total_price;
+    private String type;
 
-    public TicketPayload(Long id, Long user_id, Long flight_id, Long aircraftSeat_id, @NotBlank @NotNull TicketStatus status, @NotBlank @NotNull int total_price) {
+
+    public TicketPayload(Long id, Long user_id, Long flight_id, String aircraftSeat_id, @NotBlank @NotNull TicketStatus status) {
         this.id = id;
         this.user_id = user_id;
         this.flight_id = flight_id;
         this.aircraftSeat_id = aircraftSeat_id;
-        this.total_price = total_price;
     }
 
     public Long getId() {
@@ -59,11 +55,11 @@ public class TicketPayload {
         this.flight_id = flight_id;
     }
 
-    public Long getAircraftSeat_id() {
+    public String getAircraftSeat_id() {
         return aircraftSeat_id;
     }
 
-    public void setAircraftSeat_id(Long aircraftSeat_id) {
+    public void setAircraftSeat_id(String aircraftSeat_id) {
         this.aircraftSeat_id = aircraftSeat_id;
     }
 
@@ -75,11 +71,11 @@ public class TicketPayload {
         this.status = status;
     }
 
-    public int getTotal_price() {
-        return total_price;
+    public String getType() {
+        return type;
     }
 
-    public void setTotal_price(int total_price) {
-        this.total_price = total_price;
+    public void setType(String type) {
+        this.type = type;
     }
 }

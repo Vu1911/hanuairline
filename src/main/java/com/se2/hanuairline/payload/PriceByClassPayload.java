@@ -22,7 +22,6 @@ public class PriceByClassPayload {
 
     public PriceByClassPayload(Long id, Long travelclass_id, Long airway_id, int price) {
         this.id = id;
-        System.out.println(this.id);
         this.travelclass_id = travelclass_id;
         this.airway_id = airway_id;
         this.price = price;

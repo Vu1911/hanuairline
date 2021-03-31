@@ -1,5 +1,6 @@
 package com.se2.hanuairline.model.aircraft;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.audit.DateAudit;
 
@@ -34,9 +35,11 @@ public class Aircraft extends DateAudit implements Cloneable{
     @Enumerated(EnumType.STRING)
     private AircraftStatus status;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "aircraft", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private Set<AircraftSeat> aircraftSeatSet;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "aircraft")
     private Set<Flight> flights;
 

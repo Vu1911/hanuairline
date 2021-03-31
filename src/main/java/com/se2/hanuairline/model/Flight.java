@@ -1,18 +1,26 @@
 package com.se2.hanuairline.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.model.airport.AirportStatus;
 import com.se2.hanuairline.model.airport.Airway;
 import com.se2.hanuairline.model.airport.Gate;
 import com.se2.hanuairline.model.audit.DateAudit;
+import com.se2.hanuairline.service.PriceByClassService;
+import com.se2.hanuairline.service.TicketService;
 import com.sun.istack.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 
 @Entity
@@ -27,7 +35,7 @@ public class Flight extends DateAudit implements Cloneable {
     @JoinColumn(name = "aircraft_id")
     private Aircraft aircraft;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "airway_id")
     private Airway airway;
 
@@ -49,6 +57,7 @@ public class Flight extends DateAudit implements Cloneable {
     @Enumerated(EnumType.STRING)
     private FlightStatus status; ;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "flight")
     private Set<Ticket> ticket;
 
@@ -58,6 +67,12 @@ public class Flight extends DateAudit implements Cloneable {
             inverseJoinColumns = @JoinColumn(name = "discount_id"))
     @Nullable
     private Set<DiscountEvent> discount;
+
+    @Transient
+    private int minPrice;
+
+    @Transient
+    private int remainSlot;
 
     public Flight(Long id, Aircraft aircraft, Airway airway, @NotNull Instant departureTime, Gate departureGate, @NotNull Instant arrivalTime, Gate arrivalGate, @NotBlank @NotNull FlightStatus status) {
         this.id = id;
@@ -153,6 +168,31 @@ public class Flight extends DateAudit implements Cloneable {
     public void setTicket(Set<Ticket> ticket) {
         this.ticket = ticket;
     }
+
+    public int getMinPrice() {
+        Iterator a = this.airway.getPriceByClasses().stream().iterator();
+        minPrice = Integer.MAX_VALUE;
+        while(a.hasNext()){
+            int price = ((PriceByClass) a.next()).getPrice();
+            if (price < minPrice){
+                minPrice = price;
+            }
+        }
+        return minPrice;
+    }
+
+    @Transient
+    public int getRemainSlot() {
+        System.out.println(this.aircraft.getAircraftType().getSeatCapacity());
+        int ticketNumber = 0;
+        System.out.println(this.ticket == null);
+        if(this.ticket != null){
+            ticketNumber = this.ticket.size();
+        }
+        remainSlot = this.aircraft.getAircraftType().getSeatCapacity() - ticketNumber;
+        return remainSlot;
+    }
+
 
     @Override
     public Object clone() throws CloneNotSupportedException {

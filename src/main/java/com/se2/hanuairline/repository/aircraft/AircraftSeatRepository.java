@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,6 @@ public interface AircraftSeatRepository extends JpaRepository<AircraftSeat, Long
     Page<AircraftSeat> findByAircraft_IdOrTravelClass_Id(Long aircraft_id, Long travelclass_id, Pageable pageable);
 
     void deleteAircraftSeatsByAircraft(Aircraft aircraft);
+
+    List<AircraftSeat> findByAircraft_Id(Long id);
 }

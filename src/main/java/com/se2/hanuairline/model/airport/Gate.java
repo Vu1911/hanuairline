@@ -1,5 +1,6 @@
 package com.se2.hanuairline.model.airport;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.audit.DateAudit;
 import org.hibernate.annotations.NaturalId;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "gate")
-public class Gate extends DateAudit implements Cloneable {
+public class Gate implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,14 +23,15 @@ public class Gate extends DateAudit implements Cloneable {
     @JoinColumn(name = "airport_id")
     private Airport airport;
 
-    @NaturalId
     @NotBlank
     @NotNull
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "departureGate")
     private Set<Flight> flight1;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "arrivalGate")
     private Set<Flight> flight2;
 
