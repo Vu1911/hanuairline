@@ -52,7 +52,7 @@ public class AircraftTypeService {
             clone.setName(request.getName());
             clone.setAverageVelocity(request.getAverage_velocity());
             clone.setLuggageCapacityKg(request.getLugage_capacity_kg());
-            clone.setSeatCapacity(clone.getSeatCapacity());
+            clone.setSeatCapacity(request.getSeat_capacity());
 
             AircraftType _aircraftType = aircraftTypeRepository
                     .save(clone);

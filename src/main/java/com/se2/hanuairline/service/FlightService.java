@@ -41,6 +41,8 @@ public class FlightService {
     @Autowired
     private GateRepository gateRepository;
 
+
+
     public Page<Flight> getAll(int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
         return flightRepository.findAll(pagingSort);
@@ -106,8 +108,6 @@ public class FlightService {
 
         return _flight;
     }
-
-
 
 
 }

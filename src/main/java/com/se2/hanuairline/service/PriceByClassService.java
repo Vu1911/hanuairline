@@ -13,6 +13,7 @@ import com.se2.hanuairline.repository.aircraft.AircraftRepository;
 import com.se2.hanuairline.repository.aircraft.TravelClassRepository;
 import com.se2.hanuairline.repository.airport.AirwayRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
@@ -174,7 +175,16 @@ public class PriceByClassService {
         return priceByClass.isPresent();
     }
 
-
+    public int getMinPrice(Long airway_id){
+        return 0;
+//        Optional<PriceByClass> priceByClass = priceByClassRepository.findByAirway_IdAndTravelClass_Name(airway_id, "H");
+//        System.out.println("It's ok");
+//        if(priceByClass.isPresent()){
+//            return priceByClass.get().getPrice();
+//        } else {
+//            return 0;
+//        }
+    }
 
 }
 
