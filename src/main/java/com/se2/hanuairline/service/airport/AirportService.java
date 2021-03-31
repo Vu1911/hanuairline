@@ -92,7 +92,7 @@ public class AirportService {
 
     public List<Airport> getAirportsByCityName(String cityName){
 
-        return null;
+        return airportRepository.findAirportByCity(cityName);
     }
 
     public Airport findAirportByName(String airportName){

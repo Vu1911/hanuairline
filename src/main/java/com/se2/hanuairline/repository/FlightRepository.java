@@ -24,4 +24,6 @@ public interface FlightRepository extends JpaRepository<Flight, Long>, CrudRepos
 
     List<Flight> findFlightByAirway_Id(Long id);
 
+//    List<Flight> findFlightByAirway_Id(Long id);
+
 }
