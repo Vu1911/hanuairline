@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -82,6 +83,15 @@ public class AirwayService {
         } else {
             return false;
         }
+    }
+
+    public Airway findByArrivalAirportIdAndDepartureAirportId(Long arrivalAirportId, Long departureAirportId){
+     Optional<Airway> airway =   airwayRepository.findByArrivalAirport_IdAndDepartureAirport_Id(arrivalAirportId,departureAirportId);
+      if(!airway.isPresent()){
+          return null;
+      }
+      return airway.get();
+
     }
 
 

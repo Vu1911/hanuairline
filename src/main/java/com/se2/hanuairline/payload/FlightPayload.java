@@ -14,6 +14,10 @@ import java.time.Instant;
 import java.util.Set;
 
 public class FlightPayload {
+
+    @Id
+    private Long id;
+
     private Long aircraft_id;
 
     private Long airway_id;
@@ -33,7 +37,8 @@ public class FlightPayload {
 
     private Long discount_id;
 
-    public FlightPayload(Long aircraft_id, Long airway_id, @NotBlank @NotNull Instant departure_time, Long departure_gate_id, @NotBlank @NotNull Instant arrival_time, Long arrival_gate_id, @NotBlank @NotNull FlightStatus status, Long discount_id) {
+    public FlightPayload(Long id, Long aircraft_id, Long airway_id, @NotBlank @NotNull Instant departure_time, Long departure_gate_id, @NotBlank @NotNull Instant arrival_time, Long arrival_gate_id, @NotBlank @NotNull FlightStatus status, Long discount_id) {
+        this.id = id;
         this.aircraft_id = aircraft_id;
         this.airway_id = airway_id;
         this.departure_time = departure_time;
@@ -46,6 +51,14 @@ public class FlightPayload {
 
     public FlightPayload(){
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getAircraft_id() {

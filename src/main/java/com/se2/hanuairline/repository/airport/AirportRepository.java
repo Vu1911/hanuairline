@@ -6,6 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface AirportRepository extends JpaRepository<Airport, Long> {
     Page<Airport> findAll (Pageable pageable);
@@ -13,4 +16,7 @@ public interface AirportRepository extends JpaRepository<Airport, Long> {
     Page<Airport> findById (Long id, Pageable pageable);
 
     Page<Airport> findByNameContainingAndCountryContainingAndCityContainingAndStatus (String name, String country, String city, String status, Pageable pageable);
+
+    Airport findAirportByName(String airportName);
+   List<Airport> findAirportByCity(String cityName);
 }
