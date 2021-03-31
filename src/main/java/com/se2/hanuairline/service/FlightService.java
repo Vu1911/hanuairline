@@ -124,31 +124,21 @@ public class FlightService {
             // one way flight
         System.out.println("In Flight service");
         // filter bằng location
-//        String inputDeparturePlace = searchPayload.getDepartureAirportOrCity();
-//        String inputArrivalPlace =  searchPayload.getArrivalAirportOrCity();
+        List<Flight>  filteredByLoactionFlights = this.filterByInputAndOutputLocation(searchPayload.getDepartureAirportOrCity(),searchPayload.getArrivalAirportOrCity());
 
-        List<List<Flight>> filteredByLoactionFlights = this.filterByInputAndOutputLocation(searchPayload.getDepartureAirportOrCity(),searchPayload.getArrivalAirportOrCity());
-//      // stuck
-        System.out.println(filteredByLoactionFlights);
+//        System.out.println(filteredByLoactionFlights);
 //        Date arrivalDate = searchPayload.getArrivalTime();
 //        Date departureDate = searchPayload.getDepartureTime();
 //        int numberOfTravelers = searchPayload.getNumberOfTraveler();
 //        Long travelClassId = searchPayload.getTravelClassId();
 
         // filter by time
-        List<Flight> result  = new ArrayList<Flight>();
-        for(List<Flight> flights : filteredByLoactionFlights){
 
-            for(Flight flight : flights){
-                result.add(flight);
-            }
-
-        }
-        return result;
+        return filteredByLoactionFlights;
     }
 
 
-    private List<List<Flight>> filterByInputAndOutputLocation( String inputDeparturePlace,String inputArrivalPlace) throws InvalidInputValueException, NoResultException {
+    private  List<Flight>  filterByInputAndOutputLocation( String inputDeparturePlace,String inputArrivalPlace) throws InvalidInputValueException, NoResultException {
     System.out.println("In filter");
 
 //
@@ -284,9 +274,17 @@ public class FlightService {
         }
 
 
+        List<Flight> result  = new ArrayList<Flight>();
+        for(List<Flight> flights : flightList){
+            if(flights.isEmpty()) continue;
 
-        System.out.println("filter result" +flightList.toString());
-        return flightList;
+            for(Flight flight : flights){
+                result.add(flight);
+            }
+
+        }
+
+        return result;
 
     }
 
