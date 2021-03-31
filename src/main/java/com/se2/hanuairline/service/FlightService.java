@@ -120,20 +120,20 @@ public class FlightService {
         return _flight;
     }
 
-    public List<Flight> searchOneWayFlights(SearchPayload searchPayload) throws InvalidInputValueException, NoResultException {
-            // one way flight
-
-        // filter bằng location
-//        String inputDeparturePlace = searchPayload.getDepartureAirportOrCity();
-//        String inputArrivalPlace =  searchPayload.getArrivalAirportOrCity();
-
-        List<List<Flight>> filteredByLoactionFlights = this.filterByInputAndOutputLocation(searchPayload.getDepartureAirportOrCity(),searchPayload.getArrivalAirportOrCity());
-
-        Date arrivalDate = searchPayload.getArrivalTime();
-        Date departureDate = searchPayload.getDepartureTime();
-        int numberOfTravelers = searchPayload.getNumberOfTraveler();
-        Long travelClassId = searchPayload.getTravelClassId();
-    }
+//    public List<Flight> searchOneWayFlights(SearchPayload searchPayload) throws InvalidInputValueException, NoResultException {
+//            // one way flight
+//
+//        // filter bằng location
+////        String inputDeparturePlace = searchPayload.getDepartureAirportOrCity();
+////        String inputArrivalPlace =  searchPayload.getArrivalAirportOrCity();
+//
+//        List<List<Flight>> filteredByLoactionFlights = this.filterByInputAndOutputLocation(searchPayload.getDepartureAirportOrCity(),searchPayload.getArrivalAirportOrCity());
+//
+//        Date arrivalDate = searchPayload.getArrivalTime();
+//        Date departureDate = searchPayload.getDepartureTime();
+//        int numberOfTravelers = searchPayload.getNumberOfTraveler();
+//        Long travelClassId = searchPayload.getTravelClassId();
+//    }
 
 
     private List<List<Flight>> filterByInputAndOutputLocation( String inputDeparturePlace,String inputArrivalPlace) throws InvalidInputValueException, NoResultException {
