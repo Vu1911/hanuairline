@@ -8,10 +8,15 @@ import com.se2.hanuairline.model.aircraft.AircraftSeat;
 import com.se2.hanuairline.model.user.User;
 import com.se2.hanuairline.payload.TicketPayload;
 import com.se2.hanuairline.repository.TicketRepository;
+import com.se2.hanuairline.security.JwtTokenProvider;
 import com.se2.hanuairline.service.aircraft.AircraftSeatService;
 import com.se2.hanuairline.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -28,18 +33,15 @@ public class TicketService {
     @Autowired
     private AircraftSeatService aircraftSeatService;
 
-    public int getNumberOfTicketsByFlightId(Long flight_id){
-        return ticketRepository.countByFlight_Id(flight_id);
-    }
-
     public Ticket createTicket (TicketPayload request){
         User user = userService.getUserById(request.getUser_id());
         Flight flight = flightService.getById(request.getFlight_id());
         AircraftSeat aircraftSeat = aircraftSeatService.getAircraftSeatById(request.getAircraftSeat_id());
 
         // check duplication !!!!!
+        Optional<Ticket> check = ticketRepository.findByAircraftSeat_IdAndFlight_Id(request.getAircraftSeat_id(), request.getFlight_id());
 
-        if (user == null || flight == null || aircraftSeat == null){
+        if (user == null || flight == null || aircraftSeat == null || check.isPresent()){
             return null;
         }
 
@@ -55,4 +57,37 @@ public class TicketService {
 
     }
 
+    public boolean deleteTicket (Long ticketId, String token){
+        try {
+            Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+            if(!ticket.isPresent()){
+                return false;
+            }
+
+            Long ownerId = ticket.get().getUser().getId();
+            JwtTokenProvider tokenEncoder = new JwtTokenProvider();
+            Long userId = tokenEncoder.getUserIdFromJWT(token);
+
+            if(userId != ownerId){
+                return false;
+            }
+
+            ticketRepository.deleteById(ticketId);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    public List<Ticket> getByUserId(Long userId){
+        List<Ticket> tickets = ticketRepository.findByUser_Id(userId, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        return tickets;
+    }
+
+    public List<Ticket> getByFlightId(Long flightId){
+        List<Ticket> tickets = ticketRepository.findByFlight_Id(flightId);
+
+        return tickets;
+    }
 }

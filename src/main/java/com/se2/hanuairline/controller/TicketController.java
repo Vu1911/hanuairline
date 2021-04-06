@@ -61,37 +61,40 @@ public class TicketController {
     public ResponseEntity<?> createTicket(@Valid @RequestBody TicketPayload request) {
         try {
             Ticket ticket = ticketService.createTicket(request);
+            if(ticket == null){
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
            return new ResponseEntity<>(ticket, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PutMapping("/updateById/{id}")
-    public ResponseEntity<?> updateTicket(@PathVariable("id") long id, @RequestBody Ticket ticket) {
-        Optional<Ticket> ticketData = ticketRepository.findById(id);
+    // no update available
 
-        if (ticketData.isPresent()) {
-            try {
-                Ticket _ticket = (Ticket) ticket.clone();
-
-                return new ResponseEntity<>(ticketRepository.save(_ticket), HttpStatus.OK);
-            } catch (Exception e){
-                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteTicket(@PathVariable("id") long id) {
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteTicket(@PathVariable("id") Long id, @RequestParam("token") String token) {
         try {
-            ticketRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (ticketService.deleteTicket(id, token)){
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @GetMapping("/getByUserId/{id}")
+    public ResponseEntity<?> getByUserId(@PathVariable("id") Long userId){
+        List<Ticket> tickets = ticketService.getByUserId(userId);
+
+        return new ResponseEntity<>(tickets, HttpStatus.OK);
+    }
+
+    @GetMapping("/getByFlightId/{id}")
+    public ResponseEntity<?> getByFlightId(@PathVariable("id") Long flightId){
+        List<Ticket> tickets = ticketService.getByFlightId(flightId);
+
+        return new ResponseEntity<>(tickets, HttpStatus.OK);
+    }
 }

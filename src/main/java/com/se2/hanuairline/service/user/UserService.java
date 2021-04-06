@@ -1,6 +1,7 @@
 package com.se2.hanuairline.service.user;
 
 import com.se2.hanuairline.exception.InvalidInputValueException;
+import com.se2.hanuairline.model.Ticket;
 import com.se2.hanuairline.model.user.User;
 import com.se2.hanuairline.model.user.UserStatus;
 import com.se2.hanuairline.payload.user.ProfilePayload;
@@ -12,7 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
