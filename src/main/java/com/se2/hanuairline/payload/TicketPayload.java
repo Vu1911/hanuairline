@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class TicketPayload {
-
+    @Id
     private Long id;
 
     private Long user_id;
