@@ -1,6 +1,7 @@
 package com.se2.hanuairline.service.aircraft;
 
 import com.se2.hanuairline.exception.InvalidInputValueException;
+import com.se2.hanuairline.exception.NoResultException;
 import com.se2.hanuairline.model.aircraft.AircraftType;
 import com.se2.hanuairline.model.aircraft.SeatsByClass;
 import com.se2.hanuairline.model.aircraft.TravelClass;
@@ -121,6 +122,14 @@ public class SeatsByClassService {
         } catch (Exception e){
             return false;
         }
+    }
+
+    public SeatsByClass findByAircraftTypeIdAndTravelclassId(Long aircraftTypeId,Long travelClassId) throws NoResultException {
+        Optional<SeatsByClass> seatsByClass =   seatsByClassRepository.findByAircraftType_IdAndTravelClass_Id(aircraftTypeId,travelClassId);
+        if(!seatsByClass.isPresent()){
+            throw new NoResultException("Không có seatsByClass với aircraftTypeId: "+aircraftTypeId+" và travelClassId: "+travelClassId);
+        }
+        return seatsByClass.get();
     }
 
 }

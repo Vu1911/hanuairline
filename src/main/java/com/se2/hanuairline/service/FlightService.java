@@ -64,6 +64,7 @@ public class FlightService {
 
     @Autowired
     private TicketService ticketService;
+
     public Page<Flight> getAll(int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
         return flightRepository.findAll(pagingSort);
@@ -135,7 +136,7 @@ public class FlightService {
 
         return _flight;
     }
-
+    // search 1 way xong
     public List<Flight> searchOneWayFlights(SearchPayload searchPayload) throws InvalidInputValueException, NoResultException {
             // one way flight
         System.out.println("In Flight service");
@@ -147,19 +148,29 @@ public class FlightService {
 
 
 
-        // flight : filter by travelclassId và number of traveler  // đây sau này là hàm lấy được các ticket thỏa mãn (hạng bay + flight) này
+        // flight : filter by travelclassId và number of traveler
 
-        // bước 1 : với mỗi flight - > tìm được các aircrafts -> tìm được aircraft id
-        // bước 2 : với mỗi aircraft_id và travelClassId -> tìm được các ghế máy bay AircraftSeat_Ids[]
-        // Bước 3 : với mỗi ghế máy bay (biết đc máy bay,hạng bay) + chuyến bay -> tìm được các ticket cho chuyến bay đó Ticket[]
-        // Bước 4 : Với mỗi ticket(của máy bay và hạng bay đó)-> tìm được số ticket chưa có user
-        // Bước 5 : Nếu thỏa mãn < = số vé còn lại( chưa có user_id) -> flight thỏa mãn
-        // bước 6 : tìm được các flight thỏa mãn - > trả về flight
+        List<Flight> filteredByTravelClassAndNumberOfTravelerFlights = filterByTravelClassIdAndNumberOfTravler(filteredByTimeFlights,searchPayload.getTravelClassId(),searchPayload.getNumberOfTraveler());
+
 
 
 
          // filter
-        return filteredByTimeFlights;
+        return filteredByTravelClassAndNumberOfTravelerFlights;
+    }
+    // filter by travelclassId và number of traveler
+    private List<Flight> filterByTravelClassIdAndNumberOfTravler(List<Flight> flightList, Long travelClassId,int numberOfTraveler) throws NoResultException {
+        List<Flight> result = new ArrayList<>();
+        for(Flight flight : flightList){
+            int numberOfSlot =ticketService.checkRemainNumberOfAvailableTicketForEachClass(flight.getId(),travelClassId);
+            if(numberOfSlot >= numberOfTraveler){
+                result.add(flight);
+            }
+        }
+        if(result.isEmpty()){
+            throw new NoResultException("Không có máy bay nào với travelclassid : "+travelClassId+" và number of travler :"+numberOfTraveler);
+        }
+        return result;
     }
 
     // filter by time oke

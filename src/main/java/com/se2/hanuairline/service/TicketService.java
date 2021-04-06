@@ -5,13 +5,18 @@ import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.Ticket;
 import com.se2.hanuairline.model.TicketStatus;
 import com.se2.hanuairline.model.TicketType;
+import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.model.aircraft.AircraftSeat;
+//import com.se2.hanuairline.model.aircraft.AircraftType;
+import com.se2.hanuairline.model.aircraft.SeatsByClass;
 import com.se2.hanuairline.model.user.User;
 import com.se2.hanuairline.payload.TicketPayload;
 import com.se2.hanuairline.repository.TicketRepository;
 import com.se2.hanuairline.security.JwtTokenProvider;
 import com.se2.hanuairline.service.aircraft.AircraftSeatService;
 import com.se2.hanuairline.service.aircraft.AircraftService;
+import com.se2.hanuairline.service.aircraft.AircraftTypeService;
+import com.se2.hanuairline.service.aircraft.SeatsByClassService;
 import com.se2.hanuairline.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -40,6 +45,11 @@ public class TicketService {
     @Autowired
     private AircraftService aircraftService;
 
+    @Autowired
+    private AircraftTypeService aircraftTypeService;
+
+    @Autowired
+    private SeatsByClassService seatsByClassService;
 
 
 //    public int getNumberOfTicketsByFlightId(Long flight_id){
@@ -115,26 +125,48 @@ public class TicketService {
 
     // tìm số vé còn lại với flight_id và travel_class_id
     // từ flight_id -> tìm được remain_slot , tìm được aircraft_id,
-    // từ aircraft_id -> tìm được Aircraft_name -> tìm được aircraft_type -> tìm được aircraft_type_id
-    // aircraft_type_id  + travelClass_id -> tìm được số ghế của mỗi class của aircraft đó -> HashMap(seat_by_class_id - numberofseat)
+    // từ aircraft_id -> tìm được aircraft_type_id
+    // aircraft_type_id  + travelClass_id -> tìm được số ghế của travelClass của aircraft đó
     // query bảng ticket tìm các ticket với flight_id -> List<Ticket>
     // loop từ ticket_id -> tìm được aircraft_seat_id -> tìm được số lượng còn lại với travel_class đó (seat với class )
 
-    public int checkRemainNumberOfAvailableTicketForEachClass(Long flightId,Long travel_class_id) throws NoResultException {
-        int remainSlot = 0;
-        try {
+    public int checkRemainNumberOfAvailableTicketForEachClass(Long flightId,Long travelClassId) throws NoResultException {
+
+
             int remainSlotForThisFlight =  flightService.checkRemainSlot(flightId);
             if(remainSlotForThisFlight==0){
                 return  remainSlotForThisFlight;
             }
-            Long aircraftId=    aircraftService.findAircraftIdByFlightId(flightId);
             // find aircraft_id from flight id
+            // chắc chắn phải có aircraftId -> chắc chắc phải có aircraft
+            Long aircraftId =    aircraftService.findAircraftIdByFlightId(flightId);
 
-        } catch (NoResultException e) {
-            throw e;
+           Aircraft aircraft = aircraftService.getAircraftById(aircraftId);
+           // lấy được aircraft_type_id
+            Long aircraftTypeId = aircraft.getAircraftType().getId();
+
+            SeatsByClass seatsByClass =seatsByClassService.findByAircraftTypeIdAndTravelclassId(aircraftTypeId,travelClassId);
+            // tìm được số ghế cho class đó
+            int numberOfSeatsForThisClass = seatsByClass.getQuantity();
+
+            // tìm các ticket với travel_class_id và flight_id như vậy
+        List<Ticket> ticketList =     ticketRepository.findTicketByFlight_Id(flightId);
+        if(ticketList==null||ticketList.isEmpty()){
+            throw new NoResultException("Không có bất kì ticket nào cho flight với flight_id : " +flightId);
+        }
+        int numberOfRemainSlot = numberOfSeatsForThisClass;
+        for(Ticket ticket : ticketList){
+            String aircraftSeatId=ticket.getAircraftSeat().getId();
+            AircraftSeat aircraftSeat =aircraftSeatService.getAircraftSeatById(aircraftSeatId);
+            if(aircraftSeat.getTravelClass().getId().equals(travelClassId)){
+                numberOfRemainSlot--;
+            }
+
         }
 
-        return remainSlot;
+
+
+        return numberOfRemainSlot;
     }
 
 
