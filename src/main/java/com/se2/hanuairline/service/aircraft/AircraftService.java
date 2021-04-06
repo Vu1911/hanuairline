@@ -1,12 +1,15 @@
 package com.se2.hanuairline.service.aircraft;
 
+import com.se2.hanuairline.exception.NoResultException;
 import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.model.aircraft.AircraftStatus;
 import com.se2.hanuairline.model.aircraft.AircraftType;
 import com.se2.hanuairline.payload.aircraft.AircraftPayload;
+import com.se2.hanuairline.repository.FlightRepository;
 import com.se2.hanuairline.repository.aircraft.AircraftRepository;
 import com.se2.hanuairline.repository.aircraft.AircraftTypeRepository;
+import com.se2.hanuairline.service.FlightService;
 import com.se2.hanuairline.util.PaginationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +33,9 @@ public class AircraftService {
 
     @Autowired
     AircraftSeatService aircraftSeatService;
+
+    @Autowired
+    FlightService flightService;
 
     public Page<Aircraft> findAll(String name, String status, Long aircraft_type_id, int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
@@ -157,4 +163,12 @@ public class AircraftService {
         return false;
     }
 
+
+    public Long findAircraftIdByFlightId(Long flightId) throws NoResultException {
+    Flight flight=     flightService.getById(flightId);
+    if(flight==null){
+        throw new NoResultException("Không tìm được aircraft_id bằng flight_id "+flightId );
+    }
+    return flight.getAircraft().getId();
+    }
 }

@@ -29,4 +29,5 @@ public interface FlightRepository extends JpaRepository<Flight, Long>, CrudRepos
 
     Optional<Flight> findByArrivalTimeAndDepartureTimeAndArrivalGate_IdAndDepartureGate_Id(Instant arrivalTime, Instant departureTime, Long arrivalGateId, Long departureGateId);
 
+
 }

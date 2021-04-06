@@ -69,7 +69,7 @@ public class FlightService {
         return flightRepository.findAll(pagingSort);
     }
 
-    public Flight getById(Long id){
+    public Flight getById(Long id) {
         Optional<Flight> flightData = flightRepository.findById(id);
 
         if(flightData.isPresent()){
@@ -155,28 +155,7 @@ public class FlightService {
         // Bước 4 : Với mỗi ticket(của máy bay và hạng bay đó)-> tìm được số ticket chưa có user
         // Bước 5 : Nếu thỏa mãn < = số vé còn lại( chưa có user_id) -> flight thỏa mãn
         // bước 6 : tìm được các flight thỏa mãn - > trả về flight
-//        List<Flight> filteredByClassAndNumberFlights= new ArrayList<Flight>();
-//        Long travelClassId = searchPayload.getTravelClassId();
-//        for(Flight flight : filteredByTimeFlights)  { // !! logic
-//          Long aircraftId = flight.getAircraft().getId();
-//          List<AircraftSeat> aircraftSeats= aircraftSeatService.findAircraftSeatByAircraftIdAndTravelClassId(aircraftId,travelClassId);
-//            List<Ticket> tickets = new ArrayList<Ticket>();
-//
-//            // với mỗi ghế - > tìm được một ticket tương ứng
-//            for(AircraftSeat aircraftSeat : aircraftSeats){
-//                System.out.println("checking aircraft seats: "+aircraftSeat);
-//               Ticket ticket= ticketService.findTicketByAircraftSeatIdAndFlightId(aircraftSeat.getId(),flight.getId());
-//                System.out.println("This is USER ID: " +ticket.getUser().getId());
-//                if(ticket.getUser().getId()!=null) {
-//                    tickets.add(ticket);
-//                }
-//            }
-//            if(tickets.size()>=searchPayload.getNumberOfTraveler()){
-//                filteredByClassAndNumberFlights.add(flight);
-//
-//            }
-//
-//        }
+
 
 
          // filter
@@ -367,6 +346,17 @@ public class FlightService {
         return result;
 
     }
+
+    public int checkRemainSlot(Long flightId) throws NoResultException {
+       Optional<Flight> flightToCheck = flightRepository.findById(flightId);
+       if(!flightToCheck.isPresent()){
+           throw new NoResultException("Không có chuyến bay để kiểm tra remain slot với flight_id "+flightId);
+       }
+       Flight flight = flightToCheck.get();
+       return flight.getRemainSlot();
+    }
+
+
 
 
 
