@@ -1,5 +1,6 @@
 package com.se2.hanuairline.service;
 
+import com.se2.hanuairline.exception.NoResultException;
 import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.Ticket;
 import com.se2.hanuairline.model.TicketStatus;
@@ -11,7 +12,12 @@ import com.se2.hanuairline.repository.TicketRepository;
 import com.se2.hanuairline.service.aircraft.AircraftSeatService;
 import com.se2.hanuairline.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -54,5 +60,16 @@ public class TicketService {
         return _ticket;
 
     }
+
+    public Ticket findTicketByAircraftSeatIdAndFlightId(String aircraftSeatId,Long flightId) throws NoResultException {
+        System.out.println("Aircraftseatid: "+aircraftSeatId+" flightid: " +flightId);
+        Optional<Ticket> ticket = ticketRepository.findTicketByAircraftSeat_IdAndFlight_Id(aircraftSeatId,flightId);
+        System.out.println("ticket present ? : " + ticket.isPresent());
+        if(!ticket.isPresent()){
+            throw new NoResultException("Không có ticket cho aircraftSeat_id :"+aircraftSeatId+" và flightId: "+flightId);
+        }
+        return ticket.get();
+    }
+
 
 }

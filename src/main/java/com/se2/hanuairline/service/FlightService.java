@@ -3,11 +3,9 @@ package com.se2.hanuairline.service;
 import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.exception.NoResultException;
 import com.se2.hanuairline.exception.ResourceNotFoundException;
-import com.se2.hanuairline.model.DiscountEvent;
-import com.se2.hanuairline.model.Flight;
-import com.se2.hanuairline.model.FlightDirection;
-import com.se2.hanuairline.model.FlightStatus;
+import com.se2.hanuairline.model.*;
 import com.se2.hanuairline.model.aircraft.Aircraft;
+import com.se2.hanuairline.model.aircraft.AircraftSeat;
 import com.se2.hanuairline.model.airport.Airport;
 import com.se2.hanuairline.model.airport.Airway;
 import com.se2.hanuairline.model.airport.Gate;
@@ -18,6 +16,7 @@ import com.se2.hanuairline.repository.FlightRepository;
 import com.se2.hanuairline.repository.aircraft.AircraftRepository;
 import com.se2.hanuairline.repository.airport.AirwayRepository;
 import com.se2.hanuairline.repository.airport.GateRepository;
+import com.se2.hanuairline.service.aircraft.AircraftSeatService;
 import com.se2.hanuairline.service.airport.AirportService;
 import com.se2.hanuairline.service.airport.AirwayService;
 import com.se2.hanuairline.util.PaginationUtils;
@@ -28,6 +27,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,6 +58,12 @@ public class FlightService {
     private AirportService airportService;
     @Autowired
     private AirwayService airwayService;
+
+    @Autowired
+    private AircraftSeatService aircraftSeatService;
+
+    @Autowired
+    private TicketService ticketService;
     public Page<Flight> getAll(int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
         return flightRepository.findAll(pagingSort);
@@ -124,19 +134,83 @@ public class FlightService {
             // one way flight
         System.out.println("In Flight service");
         // filter bằng location
-        List<Flight>  filteredByLoactionFlights = this.filterByInputAndOutputLocation(searchPayload.getDepartureAirportOrCity(),searchPayload.getArrivalAirportOrCity());
+        List<Flight>  filteredByLocationFlights = this.filterByInputAndOutputLocation(searchPayload.getDepartureAirportOrCity(),searchPayload.getArrivalAirportOrCity());
 
-//        System.out.println(filteredByLoactionFlights);
-//        Date arrivalDate = searchPayload.getArrivalTime();
-//        Date departureDate = searchPayload.getDepartureTime();
-//        int numberOfTravelers = searchPayload.getNumberOfTraveler();
+       // filter by time
+         List<Flight> filteredByTimeFlights = filterByTime(filteredByLocationFlights,searchPayload);
+
+
+
+        // flight : filter by travelclassId và number of traveler  // đây sau này là hàm lấy được các ticket thỏa mãn (hạng bay + flight) này
+
+        // bước 1 : với mỗi flight - > tìm được các aircrafts -> tìm được aircraft id
+        // bước 2 : với mỗi aircraft_id và travelClassId -> tìm được các ghế máy bay AircraftSeat_Ids[]
+        // Bước 3 : với mỗi ghế máy bay (biết đc máy bay,hạng bay) + chuyến bay -> tìm được các ticket cho chuyến bay đó Ticket[]
+        // Bước 4 : Với mỗi ticket(của máy bay và hạng bay đó)-> tìm được số ticket chưa có user
+        // Bước 5 : Nếu thỏa mãn < = số vé còn lại( chưa có user_id) -> flight thỏa mãn
+        // bước 6 : tìm được các flight thỏa mãn - > trả về flight
+//        List<Flight> filteredByClassAndNumberFlights= new ArrayList<Flight>();
 //        Long travelClassId = searchPayload.getTravelClassId();
+//        for(Flight flight : filteredByTimeFlights)  { // !! logic
+//          Long aircraftId = flight.getAircraft().getId();
+//          List<AircraftSeat> aircraftSeats= aircraftSeatService.findAircraftSeatByAircraftIdAndTravelClassId(aircraftId,travelClassId);
+//            List<Ticket> tickets = new ArrayList<Ticket>();
+//
+//            // với mỗi ghế - > tìm được một ticket tương ứng
+//            for(AircraftSeat aircraftSeat : aircraftSeats){
+//                System.out.println("checking aircraft seats: "+aircraftSeat);
+//               Ticket ticket= ticketService.findTicketByAircraftSeatIdAndFlightId(aircraftSeat.getId(),flight.getId());
+//                System.out.println("This is USER ID: " +ticket.getUser().getId());
+//                if(ticket.getUser().getId()!=null) {
+//                    tickets.add(ticket);
+//                }
+//            }
+//            if(tickets.size()>=searchPayload.getNumberOfTraveler()){
+//                filteredByClassAndNumberFlights.add(flight);
+//
+//            }
+//
+//        }
 
-        // filter by time
 
-        return filteredByLoactionFlights;
+         // filter
+        return filteredByTimeFlights;
     }
 
+    // filter by time oke
+    // buoc 1 : loop qua cac Flight
+    // buoc 2: voi moi flight lay ra departure date va arrival date (instant)
+    // buoc 3 : format instant ve date
+    //buoc 4 : formte date ve String
+    // buoc 4 : compare search String va flight String
+
+    private List<Flight> filterByTime(List<Flight> filteredByLoactionFlights,SearchPayload searchPayload) throws  NoResultException {
+        List<Flight> filteredByTimeFlights = new ArrayList<Flight>();
+
+        String searchDepartureDate = searchPayload.getDepartureTime().toString();
+        String  searchArrivalDate =  searchPayload.getArrivalTime().toString();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        for (Flight flight : filteredByLoactionFlights) {
+            // Xu ly date của flight
+            Date flightDepartureDate = Date.from(flight.getDepartureTime());
+            Date flightArrivalDate = Date.from(flight.getArrivalTime());
+            String flightDepartureDateString = simpleDateFormat.format(flightDepartureDate);
+            String flightArrivalDateString = simpleDateFormat.format(flightArrivalDate);
+            System.out.println("biến flightDepartureDateString sau khi được convert : "+flightDepartureDateString);
+            System.out.println("biến flightArrivalDateString sau khi được convert : "+flightArrivalDateString);
+
+            if (flightDepartureDateString.equals(searchDepartureDate) && flightArrivalDateString.equals(searchArrivalDate)) {
+                filteredByTimeFlights.add(flight);
+            }
+        }
+
+        if(filteredByTimeFlights.isEmpty()){
+            throw new NoResultException("Không có chuyến bay nào từ :"+searchPayload.getDepartureTime()+" đến :"+searchPayload.getArrivalTime());
+        }
+
+        return filteredByTimeFlights;
+
+    }
 
     private  List<Flight>  filterByInputAndOutputLocation( String inputDeparturePlace,String inputArrivalPlace) throws InvalidInputValueException, NoResultException {
     System.out.println("In filter");

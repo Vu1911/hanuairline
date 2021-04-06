@@ -2,16 +2,13 @@ package com.se2.hanuairline.payload;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.se2.hanuairline.model.FlightDirection;
-import com.se2.hanuairline.model.TicketType;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class SearchPayload {
 
 
-    private FlightDirection flightDirection;
+//    private FlightDirection flightDirection;
 
     private Long travelClassId;
 
@@ -21,17 +18,17 @@ public class SearchPayload {
 
     private int numberOfTraveler;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date departureTime;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd")
+    private LocalDate departureTime;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date arrivalTime;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd")
+    private LocalDate arrivalTime;
 
     // adult children
 
 
-    public SearchPayload(FlightDirection flightDirection, Long travelClassId, String departureAirportOrCity, String arrivalAirportOrCity, int numberOfTraveler, Date departureTime, Date arrivalTime) {
-        this.flightDirection = flightDirection;
+    public SearchPayload( Long travelClassId, String departureAirportOrCity, String arrivalAirportOrCity, int numberOfTraveler, LocalDate departureTime, LocalDate arrivalTime) {
+//        this.flightDirection = flightDirection;
         this.travelClassId = travelClassId;
         this.departureAirportOrCity = departureAirportOrCity;
         this.arrivalAirportOrCity = arrivalAirportOrCity;
@@ -44,13 +41,13 @@ public class SearchPayload {
 
     }
 
-    public FlightDirection getFlightDirection() {
-        return flightDirection;
-    }
-
-    public void setFlightDirection(FlightDirection flightDirection) {
-        this.flightDirection = flightDirection;
-    }
+//    public FlightDirection getFlightDirection() {
+//        return flightDirection;
+//    }
+//
+//    public void setFlightDirection(FlightDirection flightDirection) {
+//        this.flightDirection = flightDirection;
+//    }
 
     public Long getTravelClassId() {
         return travelClassId;
@@ -84,26 +81,26 @@ public class SearchPayload {
         this.numberOfTraveler = numberOfTraveler;
     }
 
-    public Date getDepartureTime() {
+    public LocalDate getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(Date departureTime) {
+    public void setDepartureTime(LocalDate departureTime) {
         this.departureTime = departureTime;
     }
 
-    public Date getArrivalTime() {
+    public LocalDate getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(Date arrivalTime) {
+    public void setArrivalTime(LocalDate arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
     @Override
     public String toString() {
         return "SearchPayload{" +
-                "flightDirection=" + flightDirection +
+
                 ", travelClassId=" + travelClassId +
                 ", departureAirportOrCity='" + departureAirportOrCity + '\'' +
                 ", arrivalAirportOrCity='" + arrivalAirportOrCity + '\'' +

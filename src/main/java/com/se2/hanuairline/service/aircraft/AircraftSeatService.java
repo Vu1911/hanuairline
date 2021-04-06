@@ -1,5 +1,6 @@
 package com.se2.hanuairline.service.aircraft;
 
+import com.se2.hanuairline.exception.NoResultException;
 import com.se2.hanuairline.model.aircraft.*;
 import com.se2.hanuairline.payload.aircraft.AircraftSeatPayload;
 import com.se2.hanuairline.repository.aircraft.AircraftSeatRepository;
@@ -91,6 +92,14 @@ public class AircraftSeatService {
         } catch(Exception e){
             return false;
         }
+    }
+
+    public List<AircraftSeat> findAircraftSeatByAircraftIdAndTravelClassId(Long aircraftId,Long travelClassId) throws NoResultException {
+        List<AircraftSeat> aircraftSeats = aircraftSeatRepository.findAircraftSeatByAircraft_IdAndTravelClass_Id(aircraftId,travelClassId);
+        if(aircraftSeats.isEmpty()){
+            throw new NoResultException("Không có ghế với aircraft_id: "+aircraftId+" và travelClass_id :" +travelClassId );
+        }
+        return aircraftSeats;
     }
 
     public List<AircraftSeat> getByAircrafId(Long id){
