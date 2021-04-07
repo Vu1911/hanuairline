@@ -127,6 +127,16 @@ public class FlightService {
 
         Aircraft aircraft = aircraftData.get();
         Airway airway = airwayData.get();
+        Gate arrivalGate = arrival_gateData.get();
+        Gate departureGate = departure_gateData.get();
+
+        if(arrivalGate.getAirport().getId() != airway.getArrivalAirport().getId()){
+            throw new InvalidInputValueException("FlightController: Wrong arrival gate");
+        }
+
+        if(departureGate.getAirport().getId() != airway.getDepartureAirport().getId()){
+            throw new InvalidInputValueException("FlightController: Wrong departure gate");
+        }
 
         if(!checkPriceAvailability(airway, aircraft)){
             throw new InvalidInputValueException("FlightController: Airway is not been fully setted in price");
@@ -156,6 +166,10 @@ public class FlightService {
 
         // Get the lastest flight of the given aircraft
         Flight lastestFlight = flightRepository.findDistinctFirstByAircraft(aircraft, Sort.by(Sort.Direction.DESC, "arrivalTime"));
+
+        if(lastestFlight == null){
+            return true;
+        }
 
         Instant lastestArrivalTime = lastestFlight.getArrivalTime();
         Airport lastestArrivalAirport = lastestFlight.getAirway().getArrivalAirport();

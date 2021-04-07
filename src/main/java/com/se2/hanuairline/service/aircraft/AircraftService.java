@@ -74,11 +74,12 @@ public class AircraftService {
         Aircraft _aircraft = aircraftRepository
                 .save(aircraft);;
 
-        // create AircraftSeat
-        if(!aircraftSeatService.createAircraftSeat(aircraft)){
-            return null;
+        // create AircraftSeat only when being set to activated
+        if(request.getStatus().equals("ACTIVATED")){
+            if(!aircraftSeatService.createAircraftSeat(aircraft)){
+                return null;
+            }
         }
-
         return _aircraft;
     }
 
@@ -101,6 +102,12 @@ public class AircraftService {
                 _aircraft.setName(request.getName());
                 _aircraft.setAircraftType(aircraftTypeData.get());
                 _aircraft.setStatus(AircraftStatus.valueOf(request.getStatus()));
+
+                if(request.getStatus().equals("ACTIVATED") && _aircraft.getAircraftSeatSet().size() == 0){
+                    if(!aircraftSeatService.createAircraftSeat(_aircraft)){
+                        return null;
+                    }
+                }
 
                 Aircraft aircraft = aircraftRepository.save(_aircraft);
 

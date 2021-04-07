@@ -78,8 +78,6 @@ public class TravelClassService {
     }
 
     private boolean checkExisted(String name, String description){
-
-       System.out.println("here");
         Optional<TravelClass> data = travelClassRepository.findByNameAndDescription(name,description);
         if(data.isPresent()){
             System.out.println(data.get().toString());
