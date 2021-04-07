@@ -6,6 +6,7 @@ import com.se2.hanuairline.exception.ResourceNotFoundException;
 import com.se2.hanuairline.model.*;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.model.aircraft.AircraftSeat;
+import com.se2.hanuairline.model.aircraft.AircraftStatus;
 import com.se2.hanuairline.model.airport.Airport;
 import com.se2.hanuairline.model.airport.Airway;
 import com.se2.hanuairline.model.airport.Gate;
@@ -23,6 +24,7 @@ import com.se2.hanuairline.util.PaginationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -136,6 +138,27 @@ public class FlightService {
 
         return _flight;
     }
+
+    public boolean checkAircraftAvailability(Aircraft aircraft, Instant requestDepartureTime, Airport requestedDepartureAirport){
+        if (aircraft.getStatus().equals(AircraftStatus.DEACTIVATED)){
+            return false;
+        }
+
+        // Get the lastest flight of the given aircraft
+        Flight lastestFlight = flightRepository.findDistinctFirstByAircraft(aircraft, Sort.by(Sort.Direction.DESC, "arrivalTime"));
+
+        Instant lastestArrivalTime = lastestFlight.getArrivalTime();
+        Airport lastestArrivalAirport = lastestFlight.getAirway().getArrivalAirport();
+
+        if (lastestArrivalTime.compareTo(requestDepartureTime) < 0){
+            if (lastestArrivalAirport.getId() == requestedDepartureAirport.getId()){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // search 1 way xong
     public List<Flight> searchOneWayFlights(SearchPayload searchPayload) throws InvalidInputValueException, NoResultException {
             // one way flight

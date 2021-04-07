@@ -1,9 +1,11 @@
 package com.se2.hanuairline.repository;
 
 import com.se2.hanuairline.model.Flight;
+import com.se2.hanuairline.model.aircraft.Aircraft;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -29,5 +31,6 @@ public interface FlightRepository extends JpaRepository<Flight, Long>, CrudRepos
 
     Optional<Flight> findByArrivalTimeAndDepartureTimeAndArrivalGate_IdAndDepartureGate_Id(Instant arrivalTime, Instant departureTime, Long arrivalGateId, Long departureGateId);
 
+    Flight findDistinctFirstByAircraft(Aircraft aircraft, Sort sort);
 
 }
