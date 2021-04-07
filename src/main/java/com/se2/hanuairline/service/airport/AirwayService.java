@@ -99,12 +99,5 @@ public class AirwayService {
 
     }
 
-    public boolean checkAirwayAvailability(Airway airway){
-        int numOfSettedPrice = airway.getPriceByClasses().size();
 
-        if(numOfSettedPrice > 0){
-            return true;
-        }
-        return false;
-    }
 }

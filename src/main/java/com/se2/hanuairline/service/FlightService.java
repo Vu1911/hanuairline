@@ -128,7 +128,7 @@ public class FlightService {
         Aircraft aircraft = aircraftData.get();
         Airway airway = airwayData.get();
 
-        if(!airwayService.checkAirwayAvailability(airway)){
+        if(!checkPriceAvailability(airway, aircraft)){
             throw new InvalidInputValueException("FlightController: Airway is not been fully setted in price");
         }
 
@@ -169,6 +169,16 @@ public class FlightService {
         return false;
     }
 
+    public boolean checkPriceAvailability(Airway airway, Aircraft aircraft){
+        int numOfSettedPrice = airway.getPriceByClasses().size();
+        int numOfSettedSeats = aircraft.getAircraftType().getSeatsByClassSet().size();
+
+        if(numOfSettedPrice == numOfSettedSeats){
+            return true;
+        }
+        return false;
+    }
+
     // search 1 way xong
     public List<Flight> searchOneWayFlights(SearchPayload searchPayload) throws InvalidInputValueException, NoResultException {
             // one way flight
@@ -179,14 +189,9 @@ public class FlightService {
        // filter by time
          List<Flight> filteredByTimeFlights = filterByTime(filteredByLocationFlights,searchPayload);
 
-
-
         // flight : filter by travelclassId và number of traveler
 
         List<Flight> filteredByTravelClassAndNumberOfTravelerFlights = filterByTravelClassIdAndNumberOfTravler(filteredByTimeFlights,searchPayload.getTravelClassId(),searchPayload.getNumberOfTraveler());
-
-
-
 
          // filter
         return filteredByTravelClassAndNumberOfTravelerFlights;
