@@ -4,6 +4,7 @@ import com.se2.hanuairline.model.airport.Airport;
 import com.se2.hanuairline.model.airport.Airway;
 import com.se2.hanuairline.payload.airport.AirwayPayload;
 import com.se2.hanuairline.repository.airport.AirwayRepository;
+import com.se2.hanuairline.service.aircraft.TravelClassService;
 import com.se2.hanuairline.util.PaginationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,9 @@ public class AirwayService {
 
     @Autowired
     private AirportService airportService;
+
+    @Autowired
+    private TravelClassService travelClassService;
 
     public Page<Airway> findAll (int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
@@ -95,5 +99,12 @@ public class AirwayService {
 
     }
 
+    public boolean checkAirwayAvailability(Airway airway){
+        int numOfSettedPrice = airway.getPriceByClasses().size();
 
+        if(numOfSettedPrice > 0){
+            return true;
+        }
+        return false;
+    }
 }

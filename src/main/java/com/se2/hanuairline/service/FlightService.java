@@ -125,9 +125,19 @@ public class FlightService {
             throw new InvalidInputValueException("FlightController: aircraft not found");
         }
 
+        Aircraft aircraft = aircraftData.get();
+        Airway airway = airwayData.get();
 
-        flight.setAircraft(aircraftData.get());
-        flight.setAirway(airwayData.get());
+        if(!airwayService.checkAirwayAvailability(airway)){
+            throw new InvalidInputValueException("FlightController: Airway is not been fully setted in price");
+        }
+
+        if(!checkAircraftAvailability(aircraft, request.getDeparture_time(), airway.getDepartureAirport())){
+            throw new InvalidInputValueException("FlightController: Aircraft not available");
+        }
+
+        flight.setAircraft(aircraft);
+        flight.setAirway(airway);
         flight.setArrivalGate(arrival_gateData.get());
         flight.setArrivalTime(request.getArrival_time());
         flight.setDepartureGate(departure_gateData.get());

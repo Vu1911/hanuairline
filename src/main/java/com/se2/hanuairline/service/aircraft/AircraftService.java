@@ -100,6 +100,7 @@ public class AircraftService {
             if(!_aircraft.getStatus().equals(AircraftStatus.ACTIVATED)){
                 _aircraft.setName(request.getName());
                 _aircraft.setAircraftType(aircraftTypeData.get());
+                _aircraft.setStatus(AircraftStatus.valueOf(request.getStatus()));
 
                 Aircraft aircraft = aircraftRepository.save(_aircraft);
 
