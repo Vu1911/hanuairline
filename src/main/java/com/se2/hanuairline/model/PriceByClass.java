@@ -80,4 +80,14 @@ public class PriceByClass extends DateAudit implements Cloneable {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    @Override
+    public String toString() {
+        return "PriceByClass{" +
+                "id=" + id +
+                ", travelClass=" + travelClass +
+                ", airway=" + airway +
+                ", price=" + price +
+                '}';
+    }
 }
