@@ -132,4 +132,12 @@ public class SeatsByClassService {
         return seatsByClass.get();
     }
 
+    public boolean checkExistedSeatsByClassByAircraftTypeIdAndTravelClassId(Long aircraftTypeId,Long travelClassId){
+        Optional<SeatsByClass>seatsByClass=seatsByClassRepository.findByAircraftType_IdAndTravelClass_Id(aircraftTypeId,travelClassId);
+        if(!seatsByClass.isPresent()){
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -7,6 +7,7 @@ import com.se2.hanuairline.model.*;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.model.aircraft.AircraftSeat;
 import com.se2.hanuairline.model.aircraft.AircraftStatus;
+import com.se2.hanuairline.model.aircraft.SeatsByClass;
 import com.se2.hanuairline.model.airport.Airport;
 import com.se2.hanuairline.model.airport.Airway;
 import com.se2.hanuairline.model.airport.Gate;
@@ -18,6 +19,7 @@ import com.se2.hanuairline.repository.aircraft.AircraftRepository;
 import com.se2.hanuairline.repository.airport.AirwayRepository;
 import com.se2.hanuairline.repository.airport.GateRepository;
 import com.se2.hanuairline.service.aircraft.AircraftSeatService;
+import com.se2.hanuairline.service.aircraft.SeatsByClassService;
 import com.se2.hanuairline.service.airport.AirportService;
 import com.se2.hanuairline.service.airport.AirwayService;
 import com.se2.hanuairline.util.PaginationUtils;
@@ -66,6 +68,9 @@ public class FlightService {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private SeatsByClassService seatsByClassService;
 
     public Page<Flight> getAll(int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
@@ -175,7 +180,9 @@ public class FlightService {
         Airport lastestArrivalAirport = lastestFlight.getAirway().getArrivalAirport();
 
         if (lastestArrivalTime.compareTo(requestDepartureTime) < 0){
+            //
             if (lastestArrivalAirport.getId() == requestedDepartureAirport.getId()){
+                System.out.println("Checking equals id in Long format :"+lastestArrivalAirport.getId().equals(requestedDepartureAirport.getId()));
                 return true;
             }
         }
@@ -196,7 +203,7 @@ public class FlightService {
     // search 1 way xong
     public List<Flight> searchOneWayFlights(SearchPayload searchPayload) throws InvalidInputValueException, NoResultException {
             // one way flight
-        System.out.println("In Flight service");
+//        System.out.println("In Flight service");
         // filter bằng location
         List<Flight>  filteredByLocationFlights = this.filterByInputAndOutputLocation(searchPayload.getDepartureAirportOrCity(),searchPayload.getArrivalAirportOrCity());
 
@@ -207,13 +214,22 @@ public class FlightService {
 
         List<Flight> filteredByTravelClassAndNumberOfTravelerFlights = filterByTravelClassIdAndNumberOfTravler(filteredByTimeFlights,searchPayload.getTravelClassId(),searchPayload.getNumberOfTraveler());
 
-         // filter
+         System.out.println(filteredByTravelClassAndNumberOfTravelerFlights);
         return filteredByTravelClassAndNumberOfTravelerFlights;
     }
     // filter by travelclassId và number of traveler
     private List<Flight> filterByTravelClassIdAndNumberOfTravler(List<Flight> flightList, Long travelClassId,int numberOfTraveler) throws NoResultException {
         List<Flight> result = new ArrayList<>();
         for(Flight flight : flightList){
+            // thêm điều kiện , liệu flight với aircraft này có travelClass này không
+            Long aircraftTypeId = flight.getAircraft().getId();
+            // dùng seatsByClass service này để biết có aircraft_type này  với travelClass này không
+             boolean checkExistSeatByClass = seatsByClassService.checkExistedSeatsByClassByAircraftTypeIdAndTravelClassId(aircraftTypeId,travelClassId);
+            if(!checkExistSeatByClass){
+                continue;
+            }
+//            System.out.println("Aircraft_type_id"+flight.getAircraft().getAircraftType().getId());
+
             int numberOfSlot =ticketService.checkRemainNumberOfAvailableTicketForEachClass(flight.getId(),travelClassId);
             if(numberOfSlot >= numberOfTraveler){
                 result.add(flight);
