@@ -5,6 +5,8 @@ import com.se2.hanuairline.model.aircraft.TravelClass;
 import com.se2.hanuairline.payload.aircraft.TravelClassPayload;
 import com.se2.hanuairline.repository.aircraft.TravelClassRepository;
 import com.se2.hanuairline.service.aircraft.TravelClassService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,7 @@ public class TravelClassController {
     }
 
     // finished // checked API
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createTravelClass(@Valid @RequestBody TravelClassPayload travelClassPayload) {
@@ -68,6 +71,7 @@ public class TravelClassController {
     }
 
     // finished // checked API
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PutMapping("/updateById/{id}")
     public ResponseEntity<?> updateTravelClass(@PathVariable("id") long id, @RequestBody TravelClassPayload travelClassPayload) {
@@ -87,6 +91,7 @@ public class TravelClassController {
     }
 
     // finished // checked API
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteATravelClass(@PathVariable("id") long id) {

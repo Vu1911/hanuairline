@@ -115,6 +115,13 @@
             <version>1.5.2</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-security -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-security</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>azure-servicebus-spring-boot-starter</artifactId>

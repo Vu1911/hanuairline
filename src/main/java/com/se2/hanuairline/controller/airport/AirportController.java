@@ -4,6 +4,8 @@ import com.se2.hanuairline.model.airport.Airport;
 import com.se2.hanuairline.payload.airport.AirportPayload;
 import com.se2.hanuairline.repository.airport.AirportRepository;
 import com.se2.hanuairline.service.airport.AirportService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,7 @@ public class AirportController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createAirport(@Valid @RequestBody AirportPayload request) {
@@ -69,6 +72,7 @@ public class AirportController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PutMapping("/updateById/{id}")
     public ResponseEntity<?> updateAirport(@PathVariable("id") long id, @RequestBody AirportPayload request) {
@@ -81,6 +85,7 @@ public class AirportController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteAirport(@PathVariable("id") long id) {

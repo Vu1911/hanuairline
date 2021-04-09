@@ -103,6 +103,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
                         "/error",
                         "/favicon.ico",
                         "/**/*.png",

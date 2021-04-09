@@ -3,6 +3,8 @@ package com.se2.hanuairline.controller.airport;
 import com.se2.hanuairline.model.airport.Gate;
 import com.se2.hanuairline.payload.airport.GatePayload;
 import com.se2.hanuairline.service.airport.GateService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +61,7 @@ public class GateController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createGate(@Valid @RequestBody GatePayload request) {
@@ -76,6 +79,7 @@ public class GateController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PutMapping("/updateById/{id}")
     public ResponseEntity<?> updateGate(@PathVariable("id") long id, @RequestBody GatePayload request) {
@@ -94,6 +98,7 @@ public class GateController {
     }
 
     // Dont use this
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteGate(@PathVariable("id") long id) {

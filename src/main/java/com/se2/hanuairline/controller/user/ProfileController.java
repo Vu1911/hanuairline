@@ -5,6 +5,8 @@ import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.model.user.Profile;
 import com.se2.hanuairline.payload.user.ProfilePayload;
 import com.se2.hanuairline.service.user.ProfileService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,7 @@ public class ProfileController {
 //    }
 
     // finished // checked API
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @GetMapping("/allRecords")
     public ResponseEntity<?> getAllProfile(){

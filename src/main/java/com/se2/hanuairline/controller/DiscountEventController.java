@@ -4,6 +4,8 @@ import com.se2.hanuairline.model.DiscountEvent;
 import com.se2.hanuairline.payload.DiscountEventPayload;
 import com.se2.hanuairline.repository.DiscountEventRepository;
 import com.se2.hanuairline.service.DiscountEventService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ public class DiscountEventController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createDiscountEvent(@RequestBody DiscountEventPayload request) {
@@ -52,6 +55,7 @@ public class DiscountEventController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PutMapping("/updateById/{id}")
     public ResponseEntity<?> updateDiscountEvent(@PathVariable("id") long id, @RequestBody DiscountEventPayload request) {
@@ -64,6 +68,7 @@ public class DiscountEventController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteDiscountEvent(@PathVariable("id") long id) {

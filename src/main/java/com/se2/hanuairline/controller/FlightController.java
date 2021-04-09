@@ -16,6 +16,8 @@ import com.se2.hanuairline.repository.airport.GateRepository;
 import com.se2.hanuairline.repository.aircraft.AircraftRepository;
 import com.se2.hanuairline.repository.DiscountEventRepository;
 import com.se2.hanuairline.service.FlightService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,6 @@ public class FlightController {
 //    @Autowired
 //    private FlightRepository flightRepository;
 
-    @Secured("ROLE_ADMIN")
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllFlight(@RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
@@ -70,6 +71,7 @@ public class FlightController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createFlight(@Valid @RequestBody FlightPayload request) {

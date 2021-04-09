@@ -3,6 +3,8 @@ package com.se2.hanuairline.controller.aircraft;
 import com.se2.hanuairline.model.aircraft.SeatsByClass;
 import com.se2.hanuairline.payload.aircraft.SeatsByClassPayLoad;
 import com.se2.hanuairline.service.aircraft.SeatsByClassService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -38,6 +40,7 @@ public class SeatsByClassController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @GetMapping("/getById/{id}")
     public ResponseEntity<?> getSeatsByClassById(@PathVariable("id") long id) {
@@ -54,6 +57,7 @@ public class SeatsByClassController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createSeatsByClass(@Valid @RequestBody SeatsByClassPayLoad request) {
@@ -71,6 +75,7 @@ public class SeatsByClassController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PutMapping("/updateById/{id}")
     public ResponseEntity<?> updateSeatsByClass(@PathVariable("id") long id, @Valid @RequestBody SeatsByClassPayLoad request) {

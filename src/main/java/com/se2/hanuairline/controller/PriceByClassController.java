@@ -4,6 +4,8 @@ import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.model.PriceByClass;
 import com.se2.hanuairline.payload.PriceByClassPayload;
 import com.se2.hanuairline.service.PriceByClassService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import java.util.List;
 
 
         // Read all finished -> checked API
+        @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
         @GetMapping("/allRecords")
         public ResponseEntity<?> showAllPriceByClass(){
@@ -33,6 +36,7 @@ import java.util.List;
         }
 
         // get one base on id // checked API
+        @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
         @GetMapping("/get-one/{id}")
         public ResponseEntity<?> showOnePriceByClass(@PathVariable("id")Long id){
@@ -48,6 +52,7 @@ import java.util.List;
 
         }
         // add One -> finished , checked API
+        @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
         @PostMapping("/insert")
         public ResponseEntity<?> insertPriceByClass(@RequestBody PriceByClassPayload priceByClassPayload){
@@ -67,6 +72,7 @@ import java.util.List;
         }
 
         // update one // finished // checked API
+        @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
         @PutMapping("/update-one/{id}")
         public ResponseEntity<?> updateOneRecord(@RequestBody PriceByClassPayload priceByClassPayload, @PathVariable(name="id")Long id) { // phai gui content update len nua
@@ -86,6 +92,7 @@ import java.util.List;
 
 
         // update records with new data based on their ids // finished // checked API
+        @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
         @PutMapping("/update-many")
         public ResponseEntity<?> updateManyRecords(@RequestBody List<PriceByClassPayload> priceByClassPayloads){
@@ -103,6 +110,7 @@ import java.util.List;
 
 
         // finished // checked API
+        @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
         @DeleteMapping("/delete-many")
         public ResponseEntity<?> deleteManyPriceByClass(@RequestBody Long[]ids){
@@ -119,6 +127,7 @@ import java.util.List;
 
         }
         // delete a record by id // finished // checked API
+        @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
         @DeleteMapping("/delete-one/{id}")
         public ResponseEntity<?> deleteAPriceByClass(@PathVariable("id") Long id){

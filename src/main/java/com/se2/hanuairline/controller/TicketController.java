@@ -4,6 +4,8 @@ import com.se2.hanuairline.model.Ticket;
 import com.se2.hanuairline.payload.TicketPayload;
 import com.se2.hanuairline.repository.TicketRepository;
 import com.se2.hanuairline.service.TicketService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,7 @@ public class TicketController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createTicket(@Valid @RequestBody TicketPayload request) {
@@ -74,6 +77,7 @@ public class TicketController {
     }
 
     // no update available
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteTicket(@PathVariable("id") Long id, @RequestParam("token") String token) {

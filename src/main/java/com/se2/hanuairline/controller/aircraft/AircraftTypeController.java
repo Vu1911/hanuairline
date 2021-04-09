@@ -3,6 +3,8 @@ package com.se2.hanuairline.controller.aircraft;
 import com.se2.hanuairline.model.aircraft.AircraftType;
 import com.se2.hanuairline.payload.aircraft.AircraftTypePayload;
 import com.se2.hanuairline.service.aircraft.AircraftTypeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -48,6 +50,7 @@ public class AircraftTypeController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createAircraftType(@Valid @RequestBody AircraftTypePayload aircraftType) {
@@ -61,6 +64,7 @@ public class AircraftTypeController {
     }
 
     // no update allowed
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteAircraftType(@PathVariable("id") long id) {

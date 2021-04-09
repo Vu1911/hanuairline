@@ -6,6 +6,8 @@ import com.se2.hanuairline.payload.airport.AirwayPayload;
 import com.se2.hanuairline.repository.airport.AirwayRepository;
 import com.se2.hanuairline.repository.airport.AirportRepository;
 import com.se2.hanuairline.service.airport.AirwayService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -50,6 +52,7 @@ public class AirwayController {
 //
 //        return new ResponseEntity<>(airwayData, HttpStatus.OK);
 //    }
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createAirway(@Valid @RequestBody AirwayPayload request) {
@@ -70,6 +73,7 @@ public class AirwayController {
     // can not update the airway
 
     // Becareful !!!!!
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteAirway(@PathVariable("id") long id) {

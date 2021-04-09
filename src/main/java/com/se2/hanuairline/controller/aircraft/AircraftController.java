@@ -3,6 +3,8 @@ package com.se2.hanuairline.controller.aircraft;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.payload.aircraft.AircraftPayload;
 import com.se2.hanuairline.service.aircraft.AircraftService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +55,7 @@ public class AircraftController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createAircraft(@RequestBody AircraftPayload request) {
@@ -69,6 +72,7 @@ public class AircraftController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PutMapping("/updateById/{id}")
     public ResponseEntity<?> updateAircraft(@PathVariable("id") long id, @RequestBody AircraftPayload request) {
@@ -82,6 +86,7 @@ public class AircraftController {
 
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteAircraft(@PathVariable("id") long id) {

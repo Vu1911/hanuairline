@@ -4,6 +4,8 @@ import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.model.user.User;
 import com.se2.hanuairline.payload.user.UserPayload;
 import com.se2.hanuairline.service.user.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -36,6 +38,7 @@ public class UserController {
 //
 //    }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllUsers (@RequestParam(required = false, defaultValue = "_") String username,
@@ -54,6 +57,7 @@ public class UserController {
         }
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @GetMapping("/getById/{id}")
     public ResponseEntity<?> getUserByID(@PathVariable Long id){
