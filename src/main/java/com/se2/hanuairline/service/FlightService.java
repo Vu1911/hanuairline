@@ -7,6 +7,7 @@ import com.se2.hanuairline.model.*;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.model.aircraft.AircraftSeat;
 import com.se2.hanuairline.model.aircraft.AircraftStatus;
+import com.se2.hanuairline.model.aircraft.SeatsByClass;
 import com.se2.hanuairline.model.airport.Airport;
 import com.se2.hanuairline.model.airport.Airway;
 import com.se2.hanuairline.model.airport.Gate;
@@ -18,6 +19,8 @@ import com.se2.hanuairline.repository.aircraft.AircraftRepository;
 import com.se2.hanuairline.repository.airport.AirwayRepository;
 import com.se2.hanuairline.repository.airport.GateRepository;
 import com.se2.hanuairline.service.aircraft.AircraftSeatService;
+import com.se2.hanuairline.service.aircraft.SeatsByClassService;
+import com.se2.hanuairline.service.aircraft.TravelClassService;
 import com.se2.hanuairline.service.airport.AirportService;
 import com.se2.hanuairline.service.airport.AirwayService;
 import com.se2.hanuairline.util.PaginationUtils;
@@ -67,6 +70,12 @@ public class FlightService {
     @Autowired
     private TicketService ticketService;
 
+    @Autowired
+    private SeatsByClassService seatsByClassService;
+
+    @Autowired
+    private TravelClassService travelClassService;
+
     public Page<Flight> getAll(int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
         return flightRepository.findAll(pagingSort);
@@ -91,7 +100,7 @@ public class FlightService {
         // check duplication
         Optional<Flight> check = flightRepository.findByArrivalTimeAndDepartureTimeAndArrivalGate_IdAndDepartureGate_Id(request.getArrival_time(), request.getDeparture_time(), request.getArrival_gate_id(), request.getDeparture_gate_id());
         if(check.isPresent()){
-            return null;
+            throw new InvalidInputValueException("Flight với departure_time :"+request.getDeparture_time()+" arrival time: "+request.getArrival_time()+" departure_gate_id "+request.getDeparture_gate_id()+" arrival_gate_id "+request.getArrival_gate_id());
         }
 
         Flight flight = new Flight();
@@ -166,16 +175,22 @@ public class FlightService {
 
         // Get the lastest flight of the given aircraft
         Flight lastestFlight = flightRepository.findDistinctFirstByAircraft(aircraft, Sort.by(Sort.Direction.DESC, "arrivalTime"));
-
+        System.out.println("Getting latest flight : "+lastestFlight);
         if(lastestFlight == null){
             return true;
         }
 
         Instant lastestArrivalTime = lastestFlight.getArrivalTime();
+        System.out.println("Latest arrival time" +lastestArrivalTime);
         Airport lastestArrivalAirport = lastestFlight.getAirway().getArrivalAirport();
-
-        if (lastestArrivalTime.compareTo(requestDepartureTime) < 0){
+        System.out.println("latest arriaval airport"+lastestArrivalAirport);
+        System.out.println("Lastest arrival time less than request departure time ?:" +lastestArrivalTime.compareTo(requestDepartureTime));
+        if (lastestArrivalTime.compareTo(requestDepartureTime) < 0){ // điều kiện chuẩn
+            System.out.println(lastestArrivalAirport.getId().equals(requestedDepartureAirport.getId()));
+            System.out.println("latest arrival airport id :"+lastestArrivalAirport.getId());
+            System.out.println("request departure airport id :" +requestedDepartureAirport.getId());
             if (lastestArrivalAirport.getId() == requestedDepartureAirport.getId()){
+                System.out.println("Checking equals id in Long format :"+lastestArrivalAirport.getId().equals(requestedDepartureAirport.getId()));
                 return true;
             }
         }
@@ -184,19 +199,33 @@ public class FlightService {
     }
 
     public boolean checkPriceAvailability(Airway airway, Aircraft aircraft){
-        int numOfSettedPrice = airway.getPriceByClasses().size();
-        int numOfSettedSeats = aircraft.getAircraftType().getSeatsByClassSet().size();
 
-        if(numOfSettedPrice == numOfSettedSeats){
+
+
+        // kiểm tra số cặp airway-priceByClass thực tế có bằng số cặp airway_priceByClass đáng nhẽ phải có
+        // nếu bằng -> return true
+        // return false
+
+
+        // số travelClass mà mỗi airway phải có
+        int numberOfTravelClass=travelClassService.checkNumberOfTravelClass();
+
+        // Thực tế số cặp airway và travelClass
+        int numOfSettedPrice = airway.getPriceByClasses().size();
+
+//        int numOfSettedSeats = aircraft.getAircraftType().getSeatsByClassSet().size();
+
+        if(numOfSettedPrice == numberOfTravelClass){ // ?
             return true;
         }
         return false;
+
     }
 
     // search 1 way xong
     public List<Flight> searchOneWayFlights(SearchPayload searchPayload) throws InvalidInputValueException, NoResultException {
             // one way flight
-        System.out.println("In Flight service");
+//        System.out.println("In Flight service");
         // filter bằng location
         List<Flight>  filteredByLocationFlights = this.filterByInputAndOutputLocation(searchPayload.getDepartureAirportOrCity(),searchPayload.getArrivalAirportOrCity());
 
@@ -207,13 +236,22 @@ public class FlightService {
 
         List<Flight> filteredByTravelClassAndNumberOfTravelerFlights = filterByTravelClassIdAndNumberOfTravler(filteredByTimeFlights,searchPayload.getTravelClassId(),searchPayload.getNumberOfTraveler());
 
-         // filter
+         System.out.println(filteredByTravelClassAndNumberOfTravelerFlights);
         return filteredByTravelClassAndNumberOfTravelerFlights;
     }
     // filter by travelclassId và number of traveler
     private List<Flight> filterByTravelClassIdAndNumberOfTravler(List<Flight> flightList, Long travelClassId,int numberOfTraveler) throws NoResultException {
         List<Flight> result = new ArrayList<>();
         for(Flight flight : flightList){
+            // thêm điều kiện , liệu flight với aircraft này có travelClass này không
+            Long aircraftTypeId = flight.getAircraft().getId();
+            // dùng seatsByClass service này để biết có aircraft_type này  với travelClass này không
+             boolean checkExistSeatByClass = seatsByClassService.checkExistedSeatsByClassByAircraftTypeIdAndTravelClassId(aircraftTypeId,travelClassId);
+            if(!checkExistSeatByClass){
+                continue;
+            }
+//            System.out.println("Aircraft_type_id"+flight.getAircraft().getAircraftType().getId());
+
             int numberOfSlot =ticketService.checkRemainNumberOfAvailableTicketForEachClass(flight.getId(),travelClassId);
             if(numberOfSlot >= numberOfTraveler){
                 result.add(flight);

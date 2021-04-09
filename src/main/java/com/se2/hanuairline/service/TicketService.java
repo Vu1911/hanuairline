@@ -151,8 +151,8 @@ public class TicketService {
 
             // tìm các ticket với travel_class_id và flight_id như vậy
         List<Ticket> ticketList =     ticketRepository.findTicketByFlight_Id(flightId);
-        if(ticketList==null||ticketList.isEmpty()){
-            throw new NoResultException("Không có bất kì ticket nào cho flight với flight_id : " +flightId);
+        if(ticketList==null){
+            throw new NoResultException("tiketList == null : " +flightId);
         }
         int numberOfRemainSlot = numberOfSeatsForThisClass;
         for(Ticket ticket : ticketList){

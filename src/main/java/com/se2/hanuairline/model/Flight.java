@@ -198,4 +198,22 @@ public class Flight extends DateAudit implements Cloneable {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "id=" + id +
+                ", aircraft=" + aircraft +
+                ", airway=" + airway +
+                ", departureTime=" + departureTime +
+                ", departureGate=" + departureGate +
+                ", arrivalTime=" + arrivalTime +
+                ", arrivalGate=" + arrivalGate +
+                ", status=" + status +
+                ", ticket=" + ticket +
+                ", discount=" + discount +
+                ", minPrice=" + minPrice +
+                ", remainSlot=" + remainSlot +
+                '}';
+    }
 }

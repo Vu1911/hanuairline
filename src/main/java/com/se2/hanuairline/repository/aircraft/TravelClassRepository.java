@@ -13,7 +13,7 @@ public interface TravelClassRepository extends JpaRepository<TravelClass, Long> 
     List<TravelClass> findAll();
 
     Optional<TravelClass> findByNameAndDescription(String name,String description);
-
+//    int countAll();
     void deleteById(Long id);
 }
 

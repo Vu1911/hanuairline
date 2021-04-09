@@ -16,6 +16,9 @@ public class TravelClassService {
     @Autowired
     private TravelClassRepository travelClassRepository;
 
+    @Autowired
+    private SeatsByClassService seatsByClassService;
+
     public List<TravelClass> getAllTravelClass(){
         return travelClassRepository.findAll();
 
@@ -91,6 +94,11 @@ public class TravelClassService {
             return true;
         }
         return false;
+    }
+    public int checkNumberOfTravelClass(){
+     List<TravelClass> travelClassList =   travelClassRepository.findAll();
+
+     return travelClassList.size();
     }
 
 }
