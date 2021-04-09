@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -52,6 +53,7 @@ public class AircraftController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createAircraft(@RequestBody AircraftPayload request) {
         try {
@@ -67,6 +69,7 @@ public class AircraftController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping("/updateById/{id}")
     public ResponseEntity<?> updateAircraft(@PathVariable("id") long id, @RequestBody AircraftPayload request) {
         Aircraft updatedAircraft = aircraftService.updateAircraft(id, request);
@@ -79,6 +82,7 @@ public class AircraftController {
 
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteAircraft(@PathVariable("id") long id) {
         boolean checkDelete = aircraftService.deleteAircraft(id);

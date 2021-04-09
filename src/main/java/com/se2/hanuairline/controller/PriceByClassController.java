@@ -7,6 +7,7 @@ import com.se2.hanuairline.service.PriceByClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import java.util.List;
 
 
         // Read all finished -> checked API
+        @Secured("ROLE_ADMIN")
         @GetMapping("/allRecords")
         public ResponseEntity<?> showAllPriceByClass(){
 //            priceByClassService = new PriceByClassService();
@@ -31,6 +33,7 @@ import java.util.List;
         }
 
         // get one base on id // checked API
+        @Secured("ROLE_ADMIN")
         @GetMapping("/get-one/{id}")
         public ResponseEntity<?> showOnePriceByClass(@PathVariable("id")Long id){
             ResponseEntity<?> responseEntity;
@@ -45,6 +48,7 @@ import java.util.List;
 
         }
         // add One -> finished , checked API
+        @Secured("ROLE_ADMIN")
         @PostMapping("/insert")
         public ResponseEntity<?> insertPriceByClass(@RequestBody PriceByClassPayload priceByClassPayload){
 
@@ -63,6 +67,7 @@ import java.util.List;
         }
 
         // update one // finished // checked API
+        @Secured("ROLE_ADMIN")
         @PutMapping("/update-one/{id}")
         public ResponseEntity<?> updateOneRecord(@RequestBody PriceByClassPayload priceByClassPayload, @PathVariable(name="id")Long id) { // phai gui content update len nua
             ResponseEntity<?> responseEntity ;
@@ -81,6 +86,7 @@ import java.util.List;
 
 
         // update records with new data based on their ids // finished // checked API
+        @Secured("ROLE_ADMIN")
         @PutMapping("/update-many")
         public ResponseEntity<?> updateManyRecords(@RequestBody List<PriceByClassPayload> priceByClassPayloads){
             // String --------------------------------
@@ -97,6 +103,7 @@ import java.util.List;
 
 
         // finished // checked API
+        @Secured("ROLE_ADMIN")
         @DeleteMapping("/delete-many")
         public ResponseEntity<?> deleteManyPriceByClass(@RequestBody Long[]ids){
             ResponseEntity<?> responseEntity;
@@ -112,6 +119,7 @@ import java.util.List;
 
         }
         // delete a record by id // finished // checked API
+        @Secured("ROLE_ADMIN")
         @DeleteMapping("/delete-one/{id}")
         public ResponseEntity<?> deleteAPriceByClass(@PathVariable("id") Long id){
             ResponseEntity<?> responseEntity;

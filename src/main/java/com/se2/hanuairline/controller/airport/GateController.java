@@ -6,6 +6,7 @@ import com.se2.hanuairline.service.airport.GateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -58,6 +59,7 @@ public class GateController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createGate(@Valid @RequestBody GatePayload request) {
         try {
@@ -74,6 +76,7 @@ public class GateController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping("/updateById/{id}")
     public ResponseEntity<?> updateGate(@PathVariable("id") long id, @RequestBody GatePayload request) {
         try {
@@ -91,6 +94,7 @@ public class GateController {
     }
 
     // Dont use this
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteGate(@PathVariable("id") long id) {
         try {

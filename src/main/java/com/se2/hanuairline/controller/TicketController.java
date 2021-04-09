@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,6 +42,7 @@ public class TicketController {
         }
     }
 
+
     @GetMapping("/getById/{id}")
     public ResponseEntity<?> getTicketById(@PathVariable("id") long id) {
         try {
@@ -57,6 +59,7 @@ public class TicketController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createTicket(@Valid @RequestBody TicketPayload request) {
         try {
@@ -71,7 +74,7 @@ public class TicketController {
     }
 
     // no update available
-
+    @Secured("ROLE_ADMIN")
     @PostMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteTicket(@PathVariable("id") Long id, @RequestParam("token") String token) {
         try {
@@ -83,6 +86,7 @@ public class TicketController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/getByUserId/{id}")
     public ResponseEntity<?> getByUserId(@PathVariable("id") Long userId){

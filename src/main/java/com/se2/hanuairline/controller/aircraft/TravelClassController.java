@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,6 +48,7 @@ public class TravelClassController {
     }
 
     // finished // checked API
+    @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createTravelClass(@Valid @RequestBody TravelClassPayload travelClassPayload) {
         ResponseEntity<?> responseEntity;
@@ -66,6 +68,7 @@ public class TravelClassController {
     }
 
     // finished // checked API
+    @Secured("ROLE_ADMIN")
     @PutMapping("/updateById/{id}")
     public ResponseEntity<?> updateTravelClass(@PathVariable("id") long id, @RequestBody TravelClassPayload travelClassPayload) {
         ResponseEntity<?> responseEntity;
@@ -84,6 +87,7 @@ public class TravelClassController {
     }
 
     // finished // checked API
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteATravelClass(@PathVariable("id") long id) {
         ResponseEntity<?> responseEntity;

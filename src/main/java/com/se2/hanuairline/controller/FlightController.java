@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -39,8 +40,7 @@ public class FlightController {
 //    @Autowired
 //    private FlightRepository flightRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(com.se2.hanuairline.controller.user.UserController.class);
-
+    @Secured("ROLE_ADMIN")
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllFlight(@RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
@@ -52,6 +52,7 @@ public class FlightController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<?> getFlightById(@PathVariable("id") long id) {
@@ -69,6 +70,7 @@ public class FlightController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createFlight(@Valid @RequestBody FlightPayload request) {
         try {

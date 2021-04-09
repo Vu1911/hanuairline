@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,6 +48,7 @@ public class AircraftTypeController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createAircraftType(@Valid @RequestBody AircraftTypePayload aircraftType) {
         AircraftType newAircraftType = aircraftTypeService.creatAircraftType(aircraftType);
@@ -59,7 +61,7 @@ public class AircraftTypeController {
     }
 
     // no update allowed
-
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteAircraftType(@PathVariable("id") long id) {
         try {

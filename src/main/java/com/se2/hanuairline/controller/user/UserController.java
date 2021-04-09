@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,21 +20,23 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // checked API
-    @PostMapping("/new")
-    public ResponseEntity<?> createNewUser(@RequestBody UserPayload userPayload){
-        ResponseEntity<?> responseEntity ;
+//    // checked API
+//    @PostMapping("/new")
+//    public ResponseEntity<?> createNewUser(@RequestBody UserPayload userPayload){
+//        ResponseEntity<?> responseEntity ;
+//
+//        try {
+//            User result = userService.createNewUser(userPayload);
+//            responseEntity = new ResponseEntity<>(result,HttpStatus.OK);
+//        } catch (InvalidInputValueException e) {
+//            responseEntity = new ResponseEntity<>(e.getMessage(),HttpStatus.OK);
+//        }
+//
+//        return responseEntity;
+//
+//    }
 
-        try {
-            User result = userService.createNewUser(userPayload);
-            responseEntity = new ResponseEntity<>(result,HttpStatus.OK);
-        } catch (InvalidInputValueException e) {
-            responseEntity = new ResponseEntity<>(e.getMessage(),HttpStatus.OK);
-        }
-
-        return responseEntity;
-
-    }
+    @Secured("ROLE_ADMIN")
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllUsers (@RequestParam(required = false, defaultValue = "_") String username,
                                           @RequestParam(required = false, defaultValue = "_") String name,
@@ -51,6 +54,7 @@ public class UserController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/getById/{id}")
     public ResponseEntity<?> getUserByID(@PathVariable Long id){
         User user = userService.getUserById(id);

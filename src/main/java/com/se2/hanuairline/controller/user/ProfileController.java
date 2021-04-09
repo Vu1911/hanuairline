@@ -8,6 +8,7 @@ import com.se2.hanuairline.service.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class ProfileController {
 //    }
 
     // finished // checked API
+    @Secured("ROLE_ADMIN")
     @GetMapping("/allRecords")
     public ResponseEntity<?> getAllProfile(){
         ResponseEntity<?> responseEntity;
@@ -50,7 +52,6 @@ public class ProfileController {
     // get one by user id // finished // checked API
     @GetMapping("/get-one/{userId}")
     public ResponseEntity<?> getProfileById(@PathVariable("userId") Long userId){
-        System.out.println("In here");
        ResponseEntity<?> responseEntity;
         Profile result = null;
         try {

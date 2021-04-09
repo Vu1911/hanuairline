@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class DiscountEventController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createDiscountEvent(@RequestBody DiscountEventPayload request) {
         try {
@@ -50,6 +52,7 @@ public class DiscountEventController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping("/updateById/{id}")
     public ResponseEntity<?> updateDiscountEvent(@PathVariable("id") long id, @RequestBody DiscountEventPayload request) {
         DiscountEvent discountEventData = discountEventService.updateDiscountEvent(id, request);
@@ -61,6 +64,7 @@ public class DiscountEventController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteDiscountEvent(@PathVariable("id") long id) {
         if(discountEventService.deleteById(id)) {
