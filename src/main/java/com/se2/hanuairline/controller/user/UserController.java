@@ -16,27 +16,29 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-//    // checked API
-//    @PostMapping("/new")
-//    public ResponseEntity<?> createNewUser(@RequestBody UserPayload userPayload){
-//        ResponseEntity<?> responseEntity ;
-//
-//        try {
-//            User result = userService.createNewUser(userPayload);
-//            responseEntity = new ResponseEntity<>(result,HttpStatus.OK);
-//        } catch (InvalidInputValueException e) {
-//            responseEntity = new ResponseEntity<>(e.getMessage(),HttpStatus.OK);
-//        }
-//
-//        return responseEntity;
-//
-//    }
+    // checked API
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    @Secured("ROLE_ADMIN")
+    @PostMapping("/create")
+    public ResponseEntity<?> createNewUser(@RequestBody UserPayload userPayload){
+        ResponseEntity<?> responseEntity ;
+
+        try {
+            User result = userService.createNewUser(userPayload);
+            responseEntity = new ResponseEntity<>(result,HttpStatus.OK);
+        } catch (InvalidInputValueException e) {
+            responseEntity = new ResponseEntity<>(e.getMessage(),HttpStatus.OK);
+        }
+
+        return responseEntity;
+
+    }
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")

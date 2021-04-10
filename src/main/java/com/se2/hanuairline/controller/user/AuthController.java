@@ -7,6 +7,7 @@ import com.se2.hanuairline.payload.user.LoginRequest;
 import com.se2.hanuairline.payload.user.SignUpRequest;
 import com.se2.hanuairline.repository.user.RoleRepository;
 import com.se2.hanuairline.repository.user.UserRepository;
+import com.se2.hanuairline.security.JwtAuthenticationFilter;
 import com.se2.hanuairline.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,12 +17,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
@@ -45,6 +44,9 @@ public class AuthController {
 
     @Autowired
     JwtTokenProvider tokenProvider;
+
+    @Autowired
+    JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -98,5 +100,24 @@ public class AuthController {
                 .buildAndExpand(result.getUsername()).toUri();
 
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+    }
+
+    @GetMapping("/getMe")
+    public ResponseEntity<?> getMe(HttpServletRequest request){
+        String token = jwtAuthenticationFilter.getJwtFromRequest(request);
+
+        if(!tokenProvider.validateToken(token)){
+            return new ResponseEntity<>(null, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+        }
+
+        Long userId = tokenProvider.getUserIdFromJWT(token);
+
+        Optional<User> user = userRepository.findById(userId);
+
+        if(!user.isPresent()){
+            return new ResponseEntity<>(null, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+        }
+
+        return new ResponseEntity<>(user.get(), HttpStatus.OK);
     }
 }

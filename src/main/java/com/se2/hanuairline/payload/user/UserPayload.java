@@ -1,6 +1,7 @@
 package com.se2.hanuairline.payload.user;
 
 import com.se2.hanuairline.model.user.AuthProvider;
+import com.se2.hanuairline.model.user.RoleName;
 import com.se2.hanuairline.model.user.UserStatus;
 import org.hibernate.annotations.NaturalId;
 
@@ -28,6 +29,9 @@ public class UserPayload {
     @Size(max = 40)
     @Email
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private RoleName role;
 
     public UserPayload(Long id, @NotBlank @Size(max = 40) String name, @NotBlank @Size(max = 15) String username, @NotBlank @Size(max = 40) @Email String email) {
         this.id = id;
@@ -67,5 +71,13 @@ public class UserPayload {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public RoleName getRole() {
+        return role;
+    }
+
+    public void setRole(RoleName role) {
+        this.role = role;
     }
 }
