@@ -41,7 +41,7 @@ public class ProfileController {
     // finished // checked API
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @GetMapping("/allRecords")
+    @GetMapping("/admin/allRecords")
     public ResponseEntity<?> getAllProfile(){
         ResponseEntity<?> responseEntity;
 
@@ -53,7 +53,7 @@ public class ProfileController {
 
 
     // get one by user id // finished // checked API
-    @GetMapping("/get-one/{userId}")
+    @GetMapping("/admin/get-one/{userId}")
     public ResponseEntity<?> getProfileById(@PathVariable("userId") Long userId){
        ResponseEntity<?> responseEntity;
         Profile result = null;
@@ -68,7 +68,7 @@ public class ProfileController {
     }
 
     // update one record by user id // checked API
-    @PutMapping("/update-one/{userId}")
+    @PutMapping("/admin/update-one/{userId}")
     public ResponseEntity<?>updateOneProfileById(@PathVariable("userId") Long userId,@RequestBody ProfilePayload profilePayload){
        ResponseEntity<?> responseEntity;
        Profile result = null;
@@ -82,7 +82,7 @@ public class ProfileController {
     }
 
     // deleteOneByUserId // finished // checked API
-    @DeleteMapping("/delete-one/{userId}")
+    @DeleteMapping("/admin/delete-one/{userId}")
     public ResponseEntity<?> deleteOneByUserId(@PathVariable("userId")Long userId){
         ResponseEntity<?> responseEntity ;
         try {
@@ -95,6 +95,8 @@ public class ProfileController {
 
     }
 
+    // get me
+    // update me
 
 
 }

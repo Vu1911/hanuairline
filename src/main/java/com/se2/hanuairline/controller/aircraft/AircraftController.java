@@ -22,7 +22,7 @@ public class AircraftController {
     @Autowired
     private AircraftService aircraftService;
 
-    private static final Logger logger = LoggerFactory.getLogger(com.se2.hanuairline.controller.user.UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(com.se2.hanuairline.controller.user.AccountController.class);
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllAirCraft(@RequestParam(required = false) String name,
@@ -57,7 +57,7 @@ public class AircraftController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createAircraft(@RequestBody AircraftPayload request) {
         try {
             Aircraft _aircraft = aircraftService.createAircraft(request);
@@ -74,7 +74,7 @@ public class AircraftController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PutMapping("/updateById/{id}")
+    @PutMapping("/admin/updateById/{id}")
     public ResponseEntity<?> updateAircraft(@PathVariable("id") long id, @RequestBody AircraftPayload request) {
         Aircraft updatedAircraft = aircraftService.updateAircraft(id, request);
 
@@ -88,7 +88,7 @@ public class AircraftController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<?> deleteAircraft(@PathVariable("id") long id) {
         boolean checkDelete = aircraftService.deleteAircraft(id);
 

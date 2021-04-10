@@ -93,7 +93,7 @@ public class TravelClassController {
     // finished // checked API
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<?> deleteATravelClass(@PathVariable("id") long id) {
         ResponseEntity<?> responseEntity;
         TravelClass result ;

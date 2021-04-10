@@ -54,7 +54,7 @@ public class AirwayController {
 //    }
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createAirway(@Valid @RequestBody AirwayPayload request) {
         try {
             Airway _airway = airwayService.createAirway(request);
@@ -75,7 +75,7 @@ public class AirwayController {
     // Becareful !!!!!
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<?> deleteAirway(@PathVariable("id") long id) {
         try {
             if(airwayService.deleteAirway(id)){

@@ -42,7 +42,7 @@ public class SeatsByClassController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @GetMapping("/getById/{id}")
+    @GetMapping("/admin/getById/{id}")
     public ResponseEntity<?> getSeatsByClassById(@PathVariable("id") long id) {
         try{
             SeatsByClass seatsByClass = seatsByClassService.getById(id);
@@ -59,7 +59,7 @@ public class SeatsByClassController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createSeatsByClass(@Valid @RequestBody SeatsByClassPayLoad request) {
         try {
             SeatsByClass seatsByClass = seatsByClassService.createSeatsByClass(request);
@@ -77,7 +77,7 @@ public class SeatsByClassController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PutMapping("/updateById/{id}")
+    @PutMapping("/admin/updateById/{id}")
     public ResponseEntity<?> updateSeatsByClass(@PathVariable("id") long id, @Valid @RequestBody SeatsByClassPayLoad request) {
         try {
             SeatsByClass seatsByClass = seatsByClassService.updateSeatsByClass(id, request);

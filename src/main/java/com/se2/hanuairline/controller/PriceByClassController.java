@@ -28,7 +28,7 @@ import java.util.List;
         // Read all finished -> checked API
         @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
-        @GetMapping("/allRecords")
+        @GetMapping("/admin/allRecords")
         public ResponseEntity<?> showAllPriceByClass(){
 //            priceByClassService = new PriceByClassService();
             List<PriceByClass> result= priceByClassService.getAllPriceByClass();
@@ -38,7 +38,7 @@ import java.util.List;
         // get one base on id // checked API
         @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
-        @GetMapping("/get-one/{id}")
+        @GetMapping("/admin/get-one/{id}")
         public ResponseEntity<?> showOnePriceByClass(@PathVariable("id")Long id){
             ResponseEntity<?> responseEntity;
             PriceByClass result = null;
@@ -54,7 +54,7 @@ import java.util.List;
         // add One -> finished , checked API
         @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
-        @PostMapping("/insert")
+        @PostMapping("/admin/insert")
         public ResponseEntity<?> insertPriceByClass(@RequestBody PriceByClassPayload priceByClassPayload){
 
             PriceByClass result= null;
@@ -74,7 +74,7 @@ import java.util.List;
         // update one // finished // checked API
         @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
-        @PutMapping("/update-one/{id}")
+        @PutMapping("/admin/update-one/{id}")
         public ResponseEntity<?> updateOneRecord(@RequestBody PriceByClassPayload priceByClassPayload, @PathVariable(name="id")Long id) { // phai gui content update len nua
             ResponseEntity<?> responseEntity ;
 
@@ -94,7 +94,7 @@ import java.util.List;
         // update records with new data based on their ids // finished // checked API
         @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
-        @PutMapping("/update-many")
+        @PutMapping("/admin/update-many")
         public ResponseEntity<?> updateManyRecords(@RequestBody List<PriceByClassPayload> priceByClassPayloads){
             // String --------------------------------
             ResponseEntity<?> responseEntity;
@@ -112,7 +112,7 @@ import java.util.List;
         // finished // checked API
         @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
-        @DeleteMapping("/delete-many")
+        @DeleteMapping("/admin/delete-many")
         public ResponseEntity<?> deleteManyPriceByClass(@RequestBody Long[]ids){
             ResponseEntity<?> responseEntity;
             List<PriceByClass> result= null;
@@ -129,7 +129,7 @@ import java.util.List;
         // delete a record by id // finished // checked API
         @Operation(security = { @SecurityRequirement(name = "bearer-key") })
         @Secured("ROLE_ADMIN")
-        @DeleteMapping("/delete-one/{id}")
+        @DeleteMapping("/admin/delete-one/{id}")
         public ResponseEntity<?> deleteAPriceByClass(@PathVariable("id") Long id){
             ResponseEntity<?> responseEntity;
             PriceByClass priceByClass=null;

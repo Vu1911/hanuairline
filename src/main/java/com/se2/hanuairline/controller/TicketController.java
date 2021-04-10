@@ -63,7 +63,7 @@ public class TicketController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createTicket(@Valid @RequestBody TicketPayload request) {
         try {
             Ticket ticket = ticketService.createTicket(request);
@@ -79,7 +79,7 @@ public class TicketController {
     // no update available
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/delete/{id}")
+    @PostMapping("/admin/delete/{id}")
     public ResponseEntity<HttpStatus> deleteTicket(@PathVariable("id") Long id, @RequestParam("token") String token) {
         try {
             if (ticketService.deleteTicket(id, token)){

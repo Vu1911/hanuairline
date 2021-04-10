@@ -52,7 +52,7 @@ public class AircraftTypeController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createAircraftType(@Valid @RequestBody AircraftTypePayload aircraftType) {
         AircraftType newAircraftType = aircraftTypeService.creatAircraftType(aircraftType);
 
@@ -66,7 +66,7 @@ public class AircraftTypeController {
     // no update allowed
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<HttpStatus> deleteAircraftType(@PathVariable("id") long id) {
         try {
             aircraftTypeService.deleteAircraftType(id);

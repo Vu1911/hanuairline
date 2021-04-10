@@ -73,7 +73,7 @@ public class FlightController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createFlight(@Valid @RequestBody FlightPayload request) {
         try {
             Flight _flight = flightService.createFlight(request);

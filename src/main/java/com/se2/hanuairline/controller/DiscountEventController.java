@@ -45,7 +45,7 @@ public class DiscountEventController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createDiscountEvent(@RequestBody DiscountEventPayload request) {
         try {
             DiscountEvent _discountEvent = discountEventService.createDiscountEvent(request);
@@ -57,7 +57,7 @@ public class DiscountEventController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PutMapping("/updateById/{id}")
+    @PutMapping("/admin/updateById/{id}")
     public ResponseEntity<?> updateDiscountEvent(@PathVariable("id") long id, @RequestBody DiscountEventPayload request) {
         DiscountEvent discountEventData = discountEventService.updateDiscountEvent(id, request);
 
@@ -70,7 +70,7 @@ public class DiscountEventController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<HttpStatus> deleteDiscountEvent(@PathVariable("id") long id) {
         if(discountEventService.deleteById(id)) {
             return new ResponseEntity<>(HttpStatus.OK);

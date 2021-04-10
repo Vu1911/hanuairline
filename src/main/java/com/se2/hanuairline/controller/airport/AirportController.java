@@ -16,8 +16,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/airport")
@@ -29,7 +27,7 @@ public class AirportController {
     @Autowired
     private AirportService airportService;
 
-    private static final Logger logger = LoggerFactory.getLogger(com.se2.hanuairline.controller.user.UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(com.se2.hanuairline.controller.user.AccountController.class);
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllAirport(@RequestParam(required = false) Long id,
@@ -62,7 +60,7 @@ public class AirportController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createAirport(@Valid @RequestBody AirportPayload request) {
         try {
             Airport _airport = airportService.createAirport(request);
@@ -74,7 +72,7 @@ public class AirportController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PutMapping("/updateById/{id}")
+    @PutMapping("/admin/updateById/{id}")
     public ResponseEntity<?> updateAirport(@PathVariable("id") long id, @RequestBody AirportPayload request) {
         Airport airport = airportService.updateAirport(id, request);
 
@@ -87,7 +85,7 @@ public class AirportController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<HttpStatus> deleteAirport(@PathVariable("id") long id) {
         try {
             if(airportService.deleteAirport(id)){

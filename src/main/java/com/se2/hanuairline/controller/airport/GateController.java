@@ -63,7 +63,7 @@ public class GateController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createGate(@Valid @RequestBody GatePayload request) {
         try {
             Gate _gate = gateService.createGate(request);
@@ -81,7 +81,7 @@ public class GateController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PutMapping("/updateById/{id}")
+    @PutMapping("/admin/updateById/{id}")
     public ResponseEntity<?> updateGate(@PathVariable("id") long id, @RequestBody GatePayload request) {
         try {
             Gate _gate = gateService.updateGate(id, request);

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/account")
+public class AccountController {
 
     @Autowired
     private UserService userService;
@@ -25,7 +25,7 @@ public class UserController {
     // checked API
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createNewUser(@RequestBody UserPayload userPayload){
         ResponseEntity<?> responseEntity ;
 
@@ -42,7 +42,7 @@ public class UserController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @GetMapping("/getAll")
+    @GetMapping("/admin/getAll")
     public ResponseEntity<?> getAllUsers (@RequestParam(required = false, defaultValue = "_") String username,
                                           @RequestParam(required = false, defaultValue = "_") String name,
                                           @RequestParam(required = false, defaultValue = "_") String email,
@@ -61,7 +61,7 @@ public class UserController {
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
-    @GetMapping("/getById/{id}")
+    @GetMapping("/admin/getById/{id}")
     public ResponseEntity<?> getUserByID(@PathVariable Long id){
         User user = userService.getUserById(id);
 
@@ -72,7 +72,9 @@ public class UserController {
         }
     }
 
-    @PutMapping("/update/{id}")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    @Secured("ROLE_ADMIN")
+    @PutMapping("/admin/update/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserPayload request){
         User user = userService.updateUser(id, request);
 
@@ -83,8 +85,10 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    @Secured("ROLE_ADMIN")
     // checked API // finished
-    @DeleteMapping("/delete-one/{id}")
+    @DeleteMapping("/admin/delete-one/{id}")
     public ResponseEntity<?> deleteOneUser(@PathVariable Long id){
         ResponseEntity<?> responseEntity;
         try {
@@ -99,5 +103,8 @@ public class UserController {
         }
         return responseEntity;
     }
+
+    // update me
+    // delete me
 }
 
