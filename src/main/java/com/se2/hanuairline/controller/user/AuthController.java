@@ -9,9 +9,12 @@ import com.se2.hanuairline.repository.user.RoleRepository;
 import com.se2.hanuairline.repository.user.UserRepository;
 import com.se2.hanuairline.security.JwtAuthenticationFilter;
 import com.se2.hanuairline.security.JwtTokenProvider;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -102,6 +105,8 @@ public class AuthController {
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
     }
 
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/getMe")
     public ResponseEntity<?> getMe(HttpServletRequest request){
         String token = jwtAuthenticationFilter.getJwtFromRequest(request);
