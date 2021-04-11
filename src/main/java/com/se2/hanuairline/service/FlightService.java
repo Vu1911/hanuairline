@@ -1,13 +1,26 @@
 package com.se2.hanuairline.service;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.exception.NoResultException;
-import com.se2.hanuairline.exception.ResourceNotFoundException;
-import com.se2.hanuairline.model.*;
+import com.se2.hanuairline.model.DiscountEvent;
+import com.se2.hanuairline.model.Flight;
+import com.se2.hanuairline.model.FlightStatus;
 import com.se2.hanuairline.model.aircraft.Aircraft;
-import com.se2.hanuairline.model.aircraft.AircraftSeat;
 import com.se2.hanuairline.model.aircraft.AircraftStatus;
-import com.se2.hanuairline.model.aircraft.SeatsByClass;
 import com.se2.hanuairline.model.airport.Airport;
 import com.se2.hanuairline.model.airport.Airway;
 import com.se2.hanuairline.model.airport.Gate;
@@ -24,23 +37,6 @@ import com.se2.hanuairline.service.aircraft.TravelClassService;
 import com.se2.hanuairline.service.airport.AirportService;
 import com.se2.hanuairline.service.airport.AirwayService;
 import com.se2.hanuairline.util.PaginationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FlightService {
@@ -455,6 +451,19 @@ public class FlightService {
        }
        Flight flight = flightToCheck.get();
        return flight.getRemainSlot();
+    }
+    @Transactional
+    public boolean updateTimeFlight(Long id, Instant departureTime, Instant arrivalTime, Long departureGateId, Long arrivalGateId) {
+    	if(validateTimeAndGate(departureTime, arrivalTime, departureGateId, arrivalGateId)) {
+    		Flight flight = getById(id);
+        	flight.setDepartureTime(departureTime);
+        	flight.setArrivalTime(arrivalTime);
+        	return true;
+    	}
+    	return false;
+    }
+    private boolean validateTimeAndGate(Instant departureTime, Instant arrivalTime, Long departureGateId, Long arrivalGateId) {
+    	return !flightRepository.findByArrivalTimeAndDepartureTimeAndArrivalGate_IdAndDepartureGate_Id(arrivalTime, departureTime, arrivalGateId, departureGateId).isPresent();
     }
 
 

@@ -1,36 +1,33 @@
 package com.se2.hanuairline.controller;
 
-import com.se2.hanuairline.exception.InvalidInputValueException;
-import com.se2.hanuairline.exception.NoResultException;
-import com.se2.hanuairline.model.DiscountEvent;
-import com.se2.hanuairline.model.Flight;
-import com.se2.hanuairline.model.FlightStatus;
-import com.se2.hanuairline.model.aircraft.Aircraft;
-import com.se2.hanuairline.model.airport.Airway;
-import com.se2.hanuairline.model.airport.Gate;
-import com.se2.hanuairline.payload.FlightPayload;
-import com.se2.hanuairline.payload.SearchPayload;
-import com.se2.hanuairline.repository.FlightRepository;
-import com.se2.hanuairline.repository.airport.AirwayRepository;
-import com.se2.hanuairline.repository.airport.GateRepository;
-import com.se2.hanuairline.repository.aircraft.AircraftRepository;
-import com.se2.hanuairline.repository.DiscountEventRepository;
-import com.se2.hanuairline.service.FlightService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.se2.hanuairline.exception.InvalidInputValueException;
+import com.se2.hanuairline.exception.NoResultException;
+import com.se2.hanuairline.model.Flight;
+import com.se2.hanuairline.payload.FlightPayload;
+import com.se2.hanuairline.payload.SearchPayload;
+import com.se2.hanuairline.service.EmailService;
+import com.se2.hanuairline.service.FlightService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/flight")
@@ -41,7 +38,8 @@ public class FlightController {
 
 //    @Autowired
 //    private FlightRepository flightRepository;
-
+    @Autowired
+    private EmailService emailService;
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllFlight(@RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
@@ -100,7 +98,16 @@ public class FlightController {
         return responseEntity;
 
     }
-
+    @PutMapping("/updateTime")
+    public ResponseEntity<?> updateTimeFlight(@Valid @RequestBody FlightPayload flight){
+    	try {
+            flightService.updateTimeFlight(flight.getId(), flight.getDeparture_time(), flight.getArrival_time(), flight.getArrival_gate_id(), flight.getArrival_gate_id());    
+            emailService.updateTimeThenSendEmail(flightService.getById(flight.getId()));
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 //    @PutMapping("/updateById/{id}")
 //    public ResponseEntity<?> updateflight(@PathVariable("id") long id, @RequestBody FlightPayload request) {
 //        try {

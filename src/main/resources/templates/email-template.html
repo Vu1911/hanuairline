@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link href='http://fonts.googleapis.com/css?family=Roboto'
+	rel='stylesheet' type='text/css' />
+<style>
+body {
+	font-family: 'Roboto', sans-serif;
+	font-size: 48px;
+}
+</style>
+</head>
+<body style="margin: 0; padding: 0;">
+
+	<table align="center" border="0" cellpadding="0" cellspacing="0"
+		width="600" style="border-collapse: collapse;">
+		<tr>
+			<td align="center" bgcolor="#588C7E" style="padding: 40px 0 30px 0;">
+				<p>HANU Airline</p>
+			</td>
+		</tr>
+		<tr>
+			<td bgcolor="#F2AE72" style="padding: 40px 30px 40px 30px;">
+				<p>
+					Dear <span th:text="${name}"></span>,
+				</p>
+				<p>We regret that the flight:<span th:text="${aircraft}"></span>
+				from <span th:text="${departureAirport}"></span> to <span th:text="${arrivalAirport}"></span>
+				will be update time. The departure time will be : <span th:text="${departureTime}"></span>,
+				arrival time will be: <span th:text="${arrivalTime}"></span>
+				</p>
+				<p>Sorry to bother</p>
+				<p>Thanks</p>
+			</td>
+		</tr>
+	</table>
+
+</body>
+</html>
