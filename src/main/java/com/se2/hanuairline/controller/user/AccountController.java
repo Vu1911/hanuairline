@@ -46,7 +46,7 @@ public class AccountController {
     public ResponseEntity<?> getAllUsers (@RequestParam(required = false, defaultValue = "_") String username,
                                           @RequestParam(required = false, defaultValue = "_") String name,
                                           @RequestParam(required = false, defaultValue = "_") String email,
-                                          @RequestParam(required = false) Long id,
+                                          @RequestParam(required = false, defaultValue = "0") Long id,
                                           @RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
                                           @RequestParam(defaultValue = "id,desc") String[] sort){

@@ -98,7 +98,9 @@ public class FlightController {
         return responseEntity;
 
     }
-    @PutMapping("/updateTime")
+
+
+    @PutMapping("/admin/updateTime")
     public ResponseEntity<?> updateTimeFlight(@Valid @RequestBody FlightPayload flight){
     	try {
             flightService.updateTimeFlight(flight.getId(), flight.getDeparture_time(), flight.getArrival_time(), flight.getArrival_gate_id(), flight.getArrival_gate_id());    
