@@ -64,14 +64,12 @@ public class UserService {
         return createdUser;
     }
 
-    public Page<User> findAllUser(String username, String name, String email, Long id, int page, int size, String[] sort){
+    public Page<User> findAllUser(String email, int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
-
-        if(id != null && id != 0){
-            return userRepository.findById(id, pagingSort);
+        if(email.equals("_")){
+            return userRepository.findAll(pagingSort);
         }
-
-        return userRepository.findByEmailContainingAndUsernameContainingAndNameContaining(email, username, name, pagingSort);
+        return userRepository.findByEmailContaining(email, pagingSort);
     }
 
     public User getUserById(Long id){

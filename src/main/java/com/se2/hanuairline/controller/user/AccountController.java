@@ -43,15 +43,12 @@ public class AccountController {
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @GetMapping("/admin/getAll")
-    public ResponseEntity<?> getAllUsers (@RequestParam(required = false, defaultValue = "_") String username,
-                                          @RequestParam(required = false, defaultValue = "_") String name,
-                                          @RequestParam(required = false, defaultValue = "_") String email,
-                                          @RequestParam(required = false, defaultValue = "0") Long id,
+    public ResponseEntity<?> getAllUsers (@RequestParam(required = false, defaultValue = "_") String email,
                                           @RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
                                           @RequestParam(defaultValue = "id,desc") String[] sort){
         try {
-            Page<User> usersData = userService.findAllUser(username, name, email, id, page, size, sort);
+            Page<User> usersData = userService.findAllUser(email, page, size, sort);
 
             return new ResponseEntity<>(usersData, HttpStatus.OK);
         } catch (Exception e){

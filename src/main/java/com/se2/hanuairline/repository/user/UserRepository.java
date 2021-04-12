@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long>, CrudRepositor
 
     Page<User> findById (Long id, Pageable pageable);
 
-    Page<User> findByEmailContainingAndUsernameContainingAndNameContaining(String email, String username, String name, Pageable pageable);
+    Page<User> findByEmailContaining(String email, Pageable pageable);
 
 //    List<User> findByUsernameRole
 
