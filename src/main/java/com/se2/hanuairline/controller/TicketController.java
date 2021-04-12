@@ -62,8 +62,8 @@ public class TicketController {
     }
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
-    @Secured("ROLE_ADMIN")
-    @PostMapping("/admin/create")
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @PostMapping("/create")
     public ResponseEntity<?> createTicket(@Valid @RequestBody TicketPayload request) {
         try {
             Ticket ticket = ticketService.createTicket(request);

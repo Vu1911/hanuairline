@@ -67,7 +67,7 @@ public class UserService {
     public Page<User> findAllUser(String username, String name, String email, Long id, int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
 
-        if(id != null){
+        if(id != null && id != 0){
             return userRepository.findById(id, pagingSort);
         }
 

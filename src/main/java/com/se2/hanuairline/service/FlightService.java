@@ -452,12 +452,14 @@ public class FlightService {
        Flight flight = flightToCheck.get();
        return flight.getRemainSlot();
     }
+
     @Transactional
     public boolean updateTimeFlight(Long id, Instant departureTime, Instant arrivalTime, Long departureGateId, Long arrivalGateId) {
     	if(validateTimeAndGate(departureTime, arrivalTime, departureGateId, arrivalGateId)) {
     		Flight flight = getById(id);
         	flight.setDepartureTime(departureTime);
         	flight.setArrivalTime(arrivalTime);
+        	flightRepository.save(flight);
         	return true;
     	}
     	return false;
