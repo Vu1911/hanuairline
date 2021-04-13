@@ -53,12 +53,14 @@ public class UserService {
         user.setEmail(userPayload.getEmail());
         user.setUsername(userPayload.getUsername());
         user.setName(userPayload.getName());
+        user.setPassword(userPayload.getPassword());
         user.getRoles().clear();
         user.getRoles().add(role.get());
       // attach user profile to user
         User createdUser =  userRepository.save(user);
         // stuck here
-        ProfilePayload profilePayload = new ProfilePayload(null,user.getId(),null,null,null);
+
+        ProfilePayload profilePayload = new ProfilePayload(createdUser.getId(),null,null,null);
       // remove invalidInputValueException later
         profileService.createNewProfile(profilePayload);
         return createdUser;

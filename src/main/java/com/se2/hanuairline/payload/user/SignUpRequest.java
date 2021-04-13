@@ -1,5 +1,6 @@
 package com.se2.hanuairline.payload.user;
 
+import com.se2.hanuairline.model.user.RoleName;
 import org.hibernate.annotations.NaturalId;
 
 import javax.validation.constraints.Email;
@@ -9,7 +10,7 @@ import javax.validation.constraints.Size;
 public class SignUpRequest {
     @NotBlank
     @Size(max = 40)
-    private String name;
+        private String name;
 
     @NotBlank
     @Size(max = 15)
@@ -26,6 +27,15 @@ public class SignUpRequest {
     @NotBlank
     @Size(max = 100)
     private String password;
+
+    public SignUpRequest(String name, String username, String email, String imageUrl, String password) {
+        System.out.println("pasword"+password);
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.imageUrl = imageUrl;
+        this.password = password;
+    }
 
     public String getName() {
         return name;

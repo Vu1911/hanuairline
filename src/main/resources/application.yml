@@ -1,3 +1,4 @@
+
 spring:
   mail:
     default-encoding: UTF-8
@@ -33,6 +34,8 @@ spring:
     serialization:
       write-dates-as-timestamps: false
     time-zone: UTC
+
+
 
   security:
     oauth2:
@@ -75,5 +78,3 @@ logging:
 springdoc:
   api-docs:
     path: /api-docs
-
-

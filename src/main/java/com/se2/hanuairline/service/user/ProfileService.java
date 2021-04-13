@@ -33,6 +33,7 @@ public class ProfileService {
 //        profile.setCredit_card_number(profilePayload.getCredit_card_number());
 //        profile.setId_card_number(profilePayload.getId_card_number());
         Profile result = profileRepository.save(profile);
+        System.out.println("profile result after create student"+result);
         return result;
 
     }

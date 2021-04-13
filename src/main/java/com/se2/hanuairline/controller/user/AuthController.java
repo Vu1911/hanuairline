@@ -1,14 +1,19 @@
 package com.se2.hanuairline.controller.user;
 
+import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.model.user.*;
 import com.se2.hanuairline.payload.ApiResponse;
 import com.se2.hanuairline.payload.user.JwtAuthenticationResponse;
 import com.se2.hanuairline.payload.user.LoginRequest;
+import com.se2.hanuairline.payload.user.ProfilePayload;
 import com.se2.hanuairline.payload.user.SignUpRequest;
 import com.se2.hanuairline.repository.user.RoleRepository;
 import com.se2.hanuairline.repository.user.UserRepository;
 import com.se2.hanuairline.security.JwtAuthenticationFilter;
 import com.se2.hanuairline.security.JwtTokenProvider;
+import com.se2.hanuairline.service.user.AuthService;
+import com.se2.hanuairline.service.user.ProfileService;
+import com.se2.hanuairline.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +56,9 @@ public class AuthController {
     @Autowired
     JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Autowired
+    AuthService authService;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -81,28 +89,15 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // Creating user's account
-        User user = new User();
-        user.setName(signUpRequest.getName());
-        user.setUsername(signUpRequest.getUsername());
-        user.setEmail(signUpRequest.getEmail());
-        user.setImageUrl(signUpRequest.getImageUrl());
-        user.setProvider(AuthProvider.local);
-        user.setStatus(UserStatus.CREATED);
+        URI location = null;
+        try {
+            location = authService.signUp(signUpRequest);
+            return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+        } catch (InvalidInputValueException e) {
 
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+            return new ResponseEntity(e.getMessage(),HttpStatus.EXPECTATION_FAILED);
+        }
 
-        Optional<Role> userRole = roleRepository.findByName(RoleName.ROLE_USER);
-
-        user.setRoles(Collections.singleton(userRole.get()));
-
-        User result = userRepository.save(user);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("api/user/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
-
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
     }
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })

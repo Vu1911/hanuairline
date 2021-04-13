@@ -27,9 +27,8 @@ public class ProfilePayload {
     @Size(max = 40)
     private String phoneNumber;
 
-    public ProfilePayload(Long id, Long user_id, @NotBlank @Size(max = 40) String id_card_number, @NotBlank @Size(max = 15) String credit_card_number, @NotBlank @Size(max = 40) String phoneNumber) {
+    public ProfilePayload(Long user_id, @NotBlank @Size(max = 40) String id_card_number, @NotBlank @Size(max = 15) String credit_card_number, @NotBlank @Size(max = 40) String phoneNumber) {
 
-        this.id = id;
         this.user_id = user_id;
         this.id_card_number = id_card_number;
         this.credit_card_number = credit_card_number;
