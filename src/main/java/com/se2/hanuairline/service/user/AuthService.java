@@ -25,7 +25,7 @@ public class AuthService {
 
      UserPayload userPayload = new UserPayload(signUpRequest.getName(),signUpRequest.getUsername(),signUpRequest.getEmail(),signUpRequest.getImageUrl(),signUpRequest.getPassword());
 
-     User user=    userService.createNewUser(userPayload);
+     User user = userService.createNewUser(userPayload);
 
      URI location = ServletUriComponentsBuilder
              .fromCurrentContextPath().path("api/user/{username}")

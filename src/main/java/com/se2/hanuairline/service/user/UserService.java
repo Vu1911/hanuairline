@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +32,8 @@ public class UserService {
     private ProfileService profileService;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
 
     public User createNewUser(UserPayload userPayload) throws InvalidInputValueException {
@@ -53,7 +56,7 @@ public class UserService {
         user.setEmail(userPayload.getEmail());
         user.setUsername(userPayload.getUsername());
         user.setName(userPayload.getName());
-        user.setPassword(userPayload.getPassword());
+        user.setPassword(passwordEncoder.encode(userPayload.getPassword()));
         user.getRoles().clear();
         user.getRoles().add(role.get());
       // attach user profile to user
