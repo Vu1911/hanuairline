@@ -71,8 +71,8 @@ public class TicketController {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
            return new ResponseEntity<>(ticket, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) { // fix here
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

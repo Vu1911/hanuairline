@@ -75,7 +75,7 @@ public class TicketService {
         ticket.setFlight(flight);
         ticket.setAircraftSeat(aircraftSeat);
         ticket.setStatus(TicketStatus.BOOKED);
-        ticket.setType(TicketType.valueOf(request.getType()));
+        ticket.setType(request.getType());
 
         Ticket _ticket = ticketRepository.save(ticket);
         return _ticket;
