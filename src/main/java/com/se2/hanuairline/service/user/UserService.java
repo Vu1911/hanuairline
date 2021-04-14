@@ -7,6 +7,7 @@ import com.se2.hanuairline.model.user.User;
 import com.se2.hanuairline.model.user.UserStatus;
 import com.se2.hanuairline.payload.ApiResponse;
 import com.se2.hanuairline.payload.user.ProfilePayload;
+import com.se2.hanuairline.payload.user.UpdateUserRequest;
 import com.se2.hanuairline.payload.user.UserPayload;
 import com.se2.hanuairline.repository.user.RoleRepository;
 import com.se2.hanuairline.repository.user.UserRepository;
@@ -87,11 +88,17 @@ public class UserService {
         }
     }
 
-    public User updateUser (Long id, UserPayload request){
+    public User updateUser (Long id, UpdateUserRequest request) throws InvalidInputValueException {
         Optional<User> userData = userRepository.findById(id);
 
         if(!userData.isPresent()){
             return null;
+        }
+
+        Optional<Role> role = roleRepository.findByName(request.getRole());
+
+        if(!role.isPresent()){
+            throw new InvalidInputValueException("No such role");
         }
 
         User user = userData.get();
@@ -99,6 +106,8 @@ public class UserService {
         user.setName(request.getName());
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
+        user.getRoles().clear();
+        user.getRoles().add(role.get());
 
         User _user = userRepository.save(user);
 

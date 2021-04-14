@@ -2,6 +2,7 @@ package com.se2.hanuairline.controller.user;
 
 import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.model.user.User;
+import com.se2.hanuairline.payload.user.UpdateUserRequest;
 import com.se2.hanuairline.payload.user.UserPayload;
 import com.se2.hanuairline.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,7 +73,7 @@ public class AccountController {
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PutMapping("/admin/update/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserPayload request){
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) throws InvalidInputValueException {
         User user = userService.updateUser(id, request);
 
         if(user == null){

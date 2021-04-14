@@ -33,12 +33,10 @@ public class User extends DateAudit implements Cloneable {
         @Size(max = 40)
         private String name;
 
-        @NaturalId
         @NotBlank
         @Size(max = 15)
         private String username;
 
-        @NaturalId
         @NotBlank
         @Size(max = 40)
         @Email

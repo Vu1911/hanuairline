@@ -45,10 +45,7 @@ public class UserPayload {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-        
-
     @Enumerated(EnumType.STRING)
-//    @JsonEnumDefaultValue("${RoleName.ROLE_USER}")
     private RoleName role=RoleName.ROLE_USER;
 
 
