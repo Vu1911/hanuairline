@@ -124,6 +124,7 @@ public class UserService {
         }
 
 //        User user = userDatar
+
         userRepository.deleteById(id);
 
         return userData.get();
