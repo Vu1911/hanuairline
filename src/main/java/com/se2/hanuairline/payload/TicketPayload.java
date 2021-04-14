@@ -2,6 +2,7 @@ package com.se2.hanuairline.payload;
 
 import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.TicketStatus;
+import com.se2.hanuairline.model.TicketType;
 import com.se2.hanuairline.model.aircraft.AircraftSeat;
 import com.se2.hanuairline.model.user.User;
 
@@ -19,17 +20,25 @@ public class TicketPayload {
 
     private String aircraftSeat_id;
 
-    private String status;
+    private TicketStatus status;
 
-    private String type;
+    private TicketType type;
 
 
-    public TicketPayload(Long id, Long user_id, Long flight_id, String aircraftSeat_id, @NotBlank @NotNull TicketStatus status) {
-        this.id = id;
+    public TicketPayload(Long user_id, Long flight_id, String aircraftSeat_id , TicketType ticketType) {
+
         this.user_id = user_id;
         this.flight_id = flight_id;
         this.aircraftSeat_id = aircraftSeat_id;
+        this.type = ticketType;
     }
+
+//    public TicketPayload(Long user_id, Long flight_id, String aircraftSeat_id, String status) {
+//        this.user_id = user_id;
+//        this.flight_id = flight_id;
+//        this.aircraftSeat_id = aircraftSeat_id;
+//        this.status = status;
+//    }
 
     public Long getId() {
         return id;
@@ -63,19 +72,19 @@ public class TicketPayload {
         this.aircraftSeat_id = aircraftSeat_id;
     }
 
-    public String getStatus() {
+    public TicketStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TicketStatus status) {
         this.status = status;
     }
 
-    public String getType() {
+    public TicketType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TicketType type) {
         this.type = type;
     }
 }

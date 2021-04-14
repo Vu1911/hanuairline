@@ -1,5 +1,6 @@
 package com.se2.hanuairline.service;
 
+import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.exception.NoResultException;
 import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.Ticket;
@@ -56,23 +57,25 @@ public class TicketService {
 //        return ticketRepository.countByFlight_Id(flight_id);
 //    }
 
-    public Ticket createTicket (TicketPayload request){
+    public Ticket createTicket (TicketPayload request) throws InvalidInputValueException {
         User user = userService.getUserById(request.getUser_id());
         Flight flight = flightService.getById(request.getFlight_id());
         AircraftSeat aircraftSeat = aircraftSeatService.getAircraftSeatById(request.getAircraftSeat_id());
 
-        // check duplication !!!!!
-
         if (user == null || flight == null || aircraftSeat == null){
-            return null;
+            throw new InvalidInputValueException("TicketPayLoad false!!");
         }
+        // check duplication !!!!!
+       if(!validateUserChooseSeat(request.getFlight_id(),request.getAircraftSeat_id())){
+           throw new InvalidInputValueException("Vé đã có người đặt");
+       };
 
         Ticket ticket = new Ticket();
         ticket.setUser(user);
         ticket.setFlight(flight);
         ticket.setAircraftSeat(aircraftSeat);
         ticket.setStatus(TicketStatus.BOOKED);
-        ticket.setType(TicketType.valueOf(request.getType()));
+        ticket.setType(request.getType());
 
         Ticket _ticket = ticketRepository.save(ticket);
         return _ticket;
@@ -108,9 +111,9 @@ public class TicketService {
         return tickets;
     }
 
-    public List<Ticket> getByFlightId(Long flightId){
-        List<Ticket> tickets = ticketRepository.findByFlight_Id(flightId);
-
+    public List<Ticket> getByFlightId(Long flightId) {
+        List<Ticket> tickets = ticketRepository.findTicketByFlight_Id(flightId);
+//        if(tickets)
         return tickets;
     }
     //    public Ticket findTicketByAircraftSeatIdAndFlightId(String aircraftSeatId,Long flightId) throws NoResultException {
@@ -167,6 +170,24 @@ public class TicketService {
 
 
         return numberOfRemainSlot;
+    }
+    // b1 : lay ticket tu flight_id
+    // b2 : lap qua cac ticket
+    // if ticket.getid==seatId ng dung nhap - > false
+    // return true
+    public boolean validateUserChooseSeat(Long flightId, String seatId){
+
+        boolean result = true;
+        List<Ticket> ticketList = this.getByFlightId(flightId);
+        for(Ticket ticket : ticketList){
+            if(ticket.getAircraftSeat().getId().equals(seatId)){
+                result = false;
+                break;
+            }
+        }
+        return result;
+
+
     }
 
 

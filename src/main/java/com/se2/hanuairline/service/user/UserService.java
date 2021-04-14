@@ -58,6 +58,8 @@ public class UserService {
         user.setUsername(userPayload.getUsername());
         user.setName(userPayload.getName());
         user.setPassword(passwordEncoder.encode(userPayload.getPassword()));
+        user.setPassword(userPayload.getPassword());
+        user.setImageUrl(user.getImageUrl());
         user.getRoles().clear();
         user.getRoles().add(role.get());
       // attach user profile to user
