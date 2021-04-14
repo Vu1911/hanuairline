@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.se2.hanuairline.model.*;
+import com.se2.hanuairline.model.aircraft.AircraftSeat;
+import com.se2.hanuairline.payload.output.AircraftSeatOutputPayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.exception.NoResultException;
-import com.se2.hanuairline.model.DiscountEvent;
-import com.se2.hanuairline.model.Flight;
-import com.se2.hanuairline.model.FlightStatus;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.model.aircraft.AircraftStatus;
 import com.se2.hanuairline.model.airport.Airport;
@@ -72,6 +72,62 @@ public class FlightService {
     @Autowired
     private TravelClassService travelClassService;
 
+    // flight validated
+    // lay cac seats
+    // check ticket -> seats status
+    // dua vao travelclass -> them vao cac list
+    // out put mình cần -> các ghế ngồi được phân chia thành booked và not booked -> 2 list
+    public List<List<AircraftSeatOutputPayload>> getSeatsAndStatus(Long flightId){
+        List<List<AircraftSeatOutputPayload>> outputPayloads = new ArrayList<List<AircraftSeatOutputPayload>>();
+        List<AircraftSeatOutputPayload> bookedSeats = new ArrayList<>();
+        List<AircraftSeatOutputPayload> notBookedSeats = new ArrayList<>();
+        outputPayloads.add(bookedSeats);
+        outputPayloads.add(notBookedSeats);
+        // chắc chắn có flight với flightId này
+        Flight flight = flightRepository.findFlightById(flightId);
+        Aircraft aircraft = flight.getAircraft();
+        // vì có aircraft - > phải có aircraft seat
+        List<AircraftSeat> seats = aircraftSeatService.getByAircrafId(aircraft.getId());
+      List<Ticket> ticketList = ticketService.getByFlightId(flightId);
+      // if do not exist any booked Seat -> all seat available
+      if(ticketList.isEmpty()){
+          AircraftSeatOutputPayload temp;
+          for(AircraftSeat aircraftSeat : seats){
+              temp = new AircraftSeatOutputPayload(aircraftSeat.getId(),aircraftSeat.getTravelClass().getId(),AircraftSeatStatus.AVAILABLE);
+              notBookedSeats.add(temp);
+          }
+          return outputPayloads;
+
+      }
+//
+      List<String> bookedSeatIdList = new ArrayList<String>();
+      for(Ticket ticket : ticketList){
+          bookedSeatIdList.add(ticket.getAircraftSeat().getId());
+      }
+      System.out.println("bookedSeatIdList"+bookedSeatIdList);
+      // neu trung id voi bookedIdList -> tao mot aircraftSeatOutputPayload ->
+      for(AircraftSeat aircraftSeat : seats){
+          boolean check = false;
+          AircraftSeatOutputPayload aircraftSeatOutputPayload;
+          for(String bookedSeatId : bookedSeatIdList ){
+              if(aircraftSeat.getId().equals(bookedSeatId)){
+                 aircraftSeatOutputPayload = new AircraftSeatOutputPayload(aircraftSeat.getId(),aircraftSeat.getTravelClass().getId(), AircraftSeatStatus.BOOKED);
+                 bookedSeats.add(aircraftSeatOutputPayload);
+                 check=true;
+                 break;
+              }
+          }
+          // if not booked
+          if(!check){
+              aircraftSeatOutputPayload = new AircraftSeatOutputPayload(aircraftSeat.getId(),aircraftSeat.getTravelClass().getId(),AircraftSeatStatus.AVAILABLE);
+              notBookedSeats.add(aircraftSeatOutputPayload);
+          }
+
+      }
+      return outputPayloads;
+
+
+    }
     public Page<Flight> getAll(int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
         return flightRepository.findAll(pagingSort);

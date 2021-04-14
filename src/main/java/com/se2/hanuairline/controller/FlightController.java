@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.se2.hanuairline.payload.output.AircraftSeatOutputPayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -110,6 +111,18 @@ public class FlightController {
             return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    // tu flight id -> tra lai tat ca cac ghe ngoi + status
+    @GetMapping("/seats-and-status/{id}")
+    public ResponseEntity<?> getSeatAndStatus(@PathVariable("id") Long flightId){
+
+          List<List<AircraftSeatOutputPayload>> result=  flightService.getSeatsAndStatus(flightId);
+          return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+
+
+
+
 //    @PutMapping("/updateById/{id}")
 //    public ResponseEntity<?> updateflight(@PathVariable("id") long id, @RequestBody FlightPayload request) {
 //        try {

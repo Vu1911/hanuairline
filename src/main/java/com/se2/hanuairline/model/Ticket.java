@@ -109,4 +109,12 @@ public class Ticket extends DateAudit implements Cloneable, Serializable {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "id=" + id +
+
+                '}';
+    }
 }

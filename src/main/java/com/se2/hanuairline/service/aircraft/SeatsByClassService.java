@@ -140,4 +140,9 @@ public class SeatsByClassService {
         return true;
     }
 
+    public int checkNumberOfClassForEachAircraftType(Long aircraftTypeId){
+      List<SeatsByClass> seatsByClasses=  seatsByClassRepository.findByAircraftType_Id(aircraftTypeId);
+      return seatsByClasses.size();
+    }
+
 }

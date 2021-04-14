@@ -60,6 +60,7 @@ public class TicketService {
     public Ticket createTicket (TicketPayload request) throws InvalidInputValueException {
         User user = userService.getUserById(request.getUser_id());
         Flight flight = flightService.getById(request.getFlight_id());
+        // chưa test xem aircraftSeat này có thuộc aircraft đó không !!
         AircraftSeat aircraftSeat = aircraftSeatService.getAircraftSeatById(request.getAircraftSeat_id());
 
         if (user == null || flight == null || aircraftSeat == null){
@@ -113,6 +114,7 @@ public class TicketService {
 
     public List<Ticket> getByFlightId(Long flightId) {
         List<Ticket> tickets = ticketRepository.findTicketByFlight_Id(flightId);
+        System.out.println("Tickets"+tickets);
 //        if(tickets)
         return tickets;
     }
