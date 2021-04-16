@@ -106,6 +106,31 @@ public class AircraftSeatService {
         return aircraftSeatRepository.findByAircraft_Id(id);
     }
 
+    public boolean checkSeatBelongToTheAircraft(String seatId, Long flightId){
+        boolean check = false;
+
+        Long aircraftId = null;
+
+        try {
+            aircraftId = aircraftService.findAircraftIdByFlightId(flightId);
+
+        } catch (NoResultException e) {
+          return false;
+        }
+
+        List<AircraftSeat> aircraftSeats =   this.getByAircrafId(aircraftId);
+         for(AircraftSeat aircraftSeat : aircraftSeats){
+             if (aircraftSeat.getId().equals(seatId)) {
+                 check = true;
+                 break;
+             }
+         }
+
+
+        return check;
+
+    }
+
     // get all the available seats that has not been booked for an aircraft with a specific flight
 
 }
