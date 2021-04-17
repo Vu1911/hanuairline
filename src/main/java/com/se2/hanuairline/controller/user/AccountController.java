@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +24,9 @@ public class AccountController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // checked API
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
@@ -31,7 +35,7 @@ public class AccountController {
         ResponseEntity<?> responseEntity ;
 
         try {
-            User result = userService.createNewUser(userPayload);
+            User result = userService.createNewUser(userPayload, passwordEncoder);
             responseEntity = new ResponseEntity<>(result,HttpStatus.OK);
         } catch (InvalidInputValueException e) {
             responseEntity = new ResponseEntity<>(e.getMessage(),HttpStatus.OK);

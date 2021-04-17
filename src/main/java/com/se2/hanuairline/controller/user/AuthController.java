@@ -89,15 +89,28 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        URI location = null;
-        try {
-            location = authService.signUp(signUpRequest);
-            return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
-        } catch (InvalidInputValueException e) {
+        // Creating user's account
+        User user = new User();
+        user.setName(signUpRequest.getName());
+        user.setUsername(signUpRequest.getUsername());
+        user.setEmail(signUpRequest.getEmail());
+        user.setImageUrl(signUpRequest.getImageUrl());
+        user.setProvider(AuthProvider.local);
+        user.setStatus(UserStatus.CREATED);
 
-            return new ResponseEntity(e.getMessage(),HttpStatus.EXPECTATION_FAILED);
-        }
+        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
+        Optional<Role> userRole = roleRepository.findByName(RoleName.ROLE_USER);
+
+        user.setRoles(Collections.singleton(userRole.get()));
+
+        User result = userRepository.save(user);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("api/user/{username}")
+                .buildAndExpand(result.getUsername()).toUri();
+
+        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
     }
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })

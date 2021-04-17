@@ -33,11 +33,9 @@ public class UserService {
     private ProfileService profileService;
     @Autowired
     private RoleRepository roleRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
 
-    public User createNewUser(UserPayload userPayload) throws InvalidInputValueException {
+    public User createNewUser(UserPayload userPayload, PasswordEncoder passwordEncoder) throws InvalidInputValueException {
         if(userRepository.existsByUsername(userPayload.getUsername())) {
             throw new InvalidInputValueException("Username is already taken!");
 

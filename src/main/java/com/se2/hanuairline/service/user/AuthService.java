@@ -15,17 +15,15 @@ import java.net.URI;
 @Service
 public class AuthService {
     @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
     RoleRepository roleRepository;
     @Autowired
     UserService userService;
 
-    public URI signUp(SignUpRequest signUpRequest) throws InvalidInputValueException {
+    public URI signUp(SignUpRequest signUpRequest, PasswordEncoder passwordEncoder) throws InvalidInputValueException {
 
      UserPayload userPayload = new UserPayload(signUpRequest.getName(),signUpRequest.getUsername(),signUpRequest.getEmail(),signUpRequest.getImageUrl(),signUpRequest.getPassword());
 
-     User user = userService.createNewUser(userPayload);
+     User user = userService.createNewUser(userPayload, passwordEncoder);
 
      URI location = ServletUriComponentsBuilder
              .fromCurrentContextPath().path("api/user/{username}")

@@ -65,9 +65,11 @@ public class User extends DateAudit implements Cloneable {
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
         private Set<Role> roles = new HashSet<>();
 
+        @JsonIgnore
         @OneToMany(mappedBy = "user")
         private Set<Ticket> ticket;
 
+        @JsonIgnore
         @OneToOne(mappedBy = "user",cascade = CascadeType.REMOVE)
         private Profile profile;
 
@@ -163,5 +165,21 @@ public class User extends DateAudit implements Cloneable {
 
         public void setStatus(UserStatus status) {
                 this.status = status;
+        }
+
+        public Set<Ticket> getTicket() {
+                return ticket;
+        }
+
+        public void setTicket(Set<Ticket> ticket) {
+                this.ticket = ticket;
+        }
+
+        public Profile getProfile() {
+                return profile;
+        }
+
+        public void setProfile(Profile profile) {
+                this.profile = profile;
         }
 }
