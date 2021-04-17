@@ -7,7 +7,11 @@ import com.se2.hanuairline.model.user.User;
 import com.se2.hanuairline.payload.user.ProfilePayload;
 import com.se2.hanuairline.repository.user.ProfileRepository;
 import com.se2.hanuairline.repository.user.UserRepository;
+import com.se2.hanuairline.security.JwtAuthenticationFilter;
+import com.se2.hanuairline.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +24,12 @@ public class ProfileService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    JwtTokenProvider tokenProvider;
+
+    @Autowired
+    JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public Profile createNewProfile(ProfilePayload profilePayload) throws InvalidInputValueException {
 
@@ -51,6 +61,24 @@ public class ProfileService {
 
         return profileRepository.findByUser_Id(id).get();
     }
+
+    public Profile getMe(String token) throws InvalidInputValueException {
+        if(!tokenProvider.validateToken(token)){
+            return null;
+        }
+
+        Long userId = tokenProvider.getUserIdFromJWT(token);
+
+        Optional<User> user = userRepository.findById(userId);
+
+        if(!user.isPresent()){
+           return null;
+        }
+
+        return getRecordByUserId(user.get().getId());
+
+    }
+
     public Profile updateRecordByUserId(Long id, ProfilePayload profilePayload) throws InvalidInputValueException {
         if(!checkExisted(id)){
             throw new InvalidInputValueException("Does not exist profile with user_id : "+id);

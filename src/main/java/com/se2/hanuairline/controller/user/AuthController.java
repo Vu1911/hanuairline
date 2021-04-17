@@ -59,6 +59,9 @@ public class AuthController {
     @Autowired
     AuthService authService;
 
+    @Autowired
+    private ProfileService profileService;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -78,7 +81,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) throws InvalidInputValueException {
         if(userRepository.existsByUsername(signUpRequest.getUsername())) {
             return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
                     HttpStatus.BAD_REQUEST);
@@ -105,6 +108,10 @@ public class AuthController {
         user.setRoles(Collections.singleton(userRole.get()));
 
         User result = userRepository.save(user);
+
+        ProfilePayload profilePayload = new ProfilePayload(result.getId(),null,null,null);
+        // remove invalidInputValueException later
+        profileService.createNewProfile(profilePayload);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("api/user/{username}")

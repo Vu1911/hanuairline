@@ -27,6 +27,7 @@ public class AccountController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     // checked API
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
