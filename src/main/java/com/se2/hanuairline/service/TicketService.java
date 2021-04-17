@@ -62,9 +62,18 @@ public class TicketService {
         Flight flight = flightService.getById(request.getFlight_id());
         AircraftSeat aircraftSeat = aircraftSeatService.getAircraftSeatById(request.getAircraftSeat_id());
 
+
         if (user == null || flight == null || aircraftSeat == null){
             throw new InvalidInputValueException("TicketPayLoad false!!");
         }
+        //  test xem aircraftSeat này có thuộc aircraft đó không !!
+
+        if(!aircraftSeatService.checkSeatBelongToTheAircraft(request.getAircraftSeat_id(),request.getFlight_id())) {
+            throw new InvalidInputValueException("Ticket payload false");
+            }
+
+
+
         // check duplication !!!!!
        if(!validateUserChooseSeat(request.getFlight_id(),request.getAircraftSeat_id())){
            throw new InvalidInputValueException("Vé đã có người đặt");
@@ -113,6 +122,7 @@ public class TicketService {
 
     public List<Ticket> getByFlightId(Long flightId) {
         List<Ticket> tickets = ticketRepository.findTicketByFlight_Id(flightId);
+        System.out.println("Tickets"+tickets);
 //        if(tickets)
         return tickets;
     }

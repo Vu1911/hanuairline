@@ -25,6 +25,8 @@ public interface FlightRepository extends JpaRepository<Flight, Long>, CrudRepos
     // has the arrival time less than the given time and the arrival airport id is the given airport
     Optional<Flight> findById(Long id);
 
+    Flight findFlightById(Long id);
+
 
     List<Flight> findFlightByAirway_Id(Long id);
 
