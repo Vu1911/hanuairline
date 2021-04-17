@@ -1,5 +1,6 @@
 package com.se2.hanuairline.controller.aircraft;
 
+import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.payload.aircraft.AircraftPayload;
 import com.se2.hanuairline.service.aircraft.AircraftService;
@@ -50,6 +51,19 @@ public class AircraftController {
 
         if (aircraft != null) {
             return new ResponseEntity<>(aircraft, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/getFlightHistoryById/{id}")
+    public ResponseEntity<?> getFlightHistoryById(@PathVariable("id") long id) {
+        Aircraft aircraft = aircraftService.getAircraftById(id);
+
+        if (aircraft != null) {
+            return new ResponseEntity<>(aircraft.getFlights(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

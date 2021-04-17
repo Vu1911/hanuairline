@@ -69,6 +69,8 @@ public class FlightController {
         }
     }
 
+
+
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/admin/create")

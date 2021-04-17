@@ -59,6 +59,7 @@ public class AircraftService {
         }
     }
 
+
     public Aircraft createAircraft (AircraftPayload request){
         Optional<AircraftType> aircraftTypeData = aircraftTypeRepository.findById(request.getAircraft_type_id());
 
@@ -136,7 +137,9 @@ public class AircraftService {
 
         // Start logic: Checking whether this aircraft is qualified to be deleted
         if(flights.isEmpty()){
-            return aircraftSeatService.deleteAircraftSeatByAircraft(_aircraft);
+                aircraftSeatService.deleteAircraftSeatByAircraft(_aircraft);
+                aircraftRepository.delete(_aircraft);
+                return true;
         }
         // End logic: Checking whether this aircraft is qualified to be deleted
 
@@ -148,7 +151,7 @@ public class AircraftService {
 
         Instant currentTime = Instant.now();
 
-        if (lastFlight.getArrivalTime().compareTo(currentTime) >= 0){
+        if (lastFlight.getArrivalTime().compareTo(currentTime) < 0){
             _aircraft.setStatus(AircraftStatus.DEACTIVATED);
             return true;
         }

@@ -15,5 +15,6 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, CrudRep
 
     List<Profile> findAll();
    Optional<Profile> findById(Long id);
+   Optional<Profile> findByUser_Id(Long userId);
    void deleteByUser_Id(Long id);
 }

@@ -49,7 +49,7 @@ public class ProfileService {
         }
 
 
-        return profileRepository.findById(id).get();
+        return profileRepository.findByUser_Id(id).get();
     }
     public Profile updateRecordByUserId(Long id, ProfilePayload profilePayload) throws InvalidInputValueException {
         if(!checkExisted(id)){
