@@ -85,7 +85,7 @@ public class FlightController {
         }
     }
 
-    @GetMapping("/search-one") // test api oke
+    @PostMapping("/search-one") // test api oke
     public ResponseEntity<?> searchOneWayFlights(@RequestBody SearchPayload searchPayload){
         System.out.println("In controller");
         // form body parameter spring boot anotaion
