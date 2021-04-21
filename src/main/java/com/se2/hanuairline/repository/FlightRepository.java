@@ -32,9 +32,9 @@ public interface FlightRepository extends JpaRepository<Flight, Long>, CrudRepos
 
 //    List<Flight> findFlightByAirway_Id(Long id);
 
-    @Query(value ="SELECT * from flight WHERE "
-    		+ "((arrivalTime BETWEEN ?1 - INTERVAL 30 MINUTE and ?1 + INTERVAL 30 MINUTE) AND arrivalGateId = ?3 OR"
-    		+ "(departureTime BETWEEN ?2 - INTERVAL 30 MINUTE and ?2 + INTERVAL 30 MINUTE) AND departureGateId = ?4", nativeQuery = true)
+//    @Query(value ="SELECT * from flight WHERE "
+//    		+ "((arrivalTime BETWEEN ?1 - INTERVAL 30 MINUTE and ?1 + INTERVAL 30 MINUTE) AND arrivalGateId = ?3 OR"
+//    		+ "(departureTime BETWEEN ?2 - INTERVAL 30 MINUTE and ?2 + INTERVAL 30 MINUTE) AND departureGateId = ?4", nativeQuery = true)
     Optional<Flight> findByArrivalTimeAndDepartureTimeAndArrivalGate_IdAndDepartureGate_Id(Instant arrivalTime, Instant departureTime, Long arrivalGateId, Long departureGateId);
 
     Flight findDistinctFirstByAircraft(Aircraft aircraft, Sort sort);

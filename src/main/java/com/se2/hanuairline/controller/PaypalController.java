@@ -1,10 +1,10 @@
 package com.se2.hanuairline.controller;
 
-import com.se2.hanuairline.Order;
 import com.se2.hanuairline.PaypalService;
 import com.se2.hanuairline.model.Ticket;
 import com.se2.hanuairline.payload.OrderPayload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +25,8 @@ public class PaypalController {
     PaypalService service;
 
 
-    public static final String SUCCESS_URL = "pay/success";
-    public static final String CANCEL_URL = "pay/cancel";
+    public static final String SUCCESS_URL = "/pay/success";
+    public static final String CANCEL_URL = "/pay/cancel";
 
     @GetMapping("/")
     public String home() {
@@ -35,7 +35,7 @@ public class PaypalController {
     }
     //@ModelAttribute("order")
     @PostMapping("/pay")
-    public String payment(@RequestBody OrderPayload orderPayload) {
+    public String payment(OrderPayload orderPayload) {
         try {
 
             // Order
@@ -43,8 +43,8 @@ public class PaypalController {
             System.out.println(("In pay"));
             System.out.println("Order "+orderPayload.toString());
             Payment payment = service.createPayment(orderPayload.getPrice(), orderPayload.getCurrency(), orderPayload.getMethod(),
-                    orderPayload.getIntent(), orderPayload.getDescription(), "http://localhost:8080/" + CANCEL_URL,
-                    "http://localhost:8080/" + SUCCESS_URL);
+                    orderPayload.getIntent(), orderPayload.getDescription(), "http://localhost:8080" + CANCEL_URL,
+                    "http://localhost:8080/payment" + SUCCESS_URL);
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
                     // create Order over here but not saved to database
@@ -68,9 +68,10 @@ public class PaypalController {
                 "cancel";
     }
     // if succcess
-    @GetMapping(value = SUCCESS_URL)
+    @GetMapping(SUCCESS_URL)
     public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
+            System.out.println(paymentId);
             Payment payment = service.executePayment(paymentId, payerId);
             System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {

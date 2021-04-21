@@ -19,7 +19,7 @@ public class OrderPayload {
     private String method;
     private String intent;
     private String description;
-    private int numberOfTicket;
+//    private int numberOfTicket;
 
     // ticket payload
 //    List<TicketPayload> ticketPayload;

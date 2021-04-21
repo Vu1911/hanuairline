@@ -145,7 +145,12 @@
 			<artifactId>rest-api-sdk</artifactId>
 			<version>1.4.2</version>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.18</version>
+		</dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

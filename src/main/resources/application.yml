@@ -79,3 +79,8 @@ springdoc:
   api-docs:
     path: /api-docs
 
+paypal:
+  mode: sandbox
+  client:
+    id: AYGF6pNoBh5rMVrDD6NGSEjzdg5aGlLxzjyhkM-rze56Dc6SuG1J1iudtVIwfE2Xiykl_ktoEdCT_gDS
+    secret: EFaI-RqCEOZtiUeu3a8RYfMxkL4d18Xmgb-OD8lztZGmLWhbrJWiZImiD1ewAfj5gQOxCzptQ0RZ4xL1

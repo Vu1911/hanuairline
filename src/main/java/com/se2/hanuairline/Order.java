@@ -7,12 +7,12 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 
-@Entity
-public class Order {
-    // order payload
-    /*
-
-     */
-
-
-}
+//@Entity
+//public class Order {
+//    // order payload
+//    /*
+//
+//     */
+//
+//
+//}
