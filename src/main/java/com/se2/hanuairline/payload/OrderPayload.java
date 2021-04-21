@@ -23,6 +23,8 @@ public class OrderPayload {
     private String intent;
     private String description;
 
+    private List<TicketPayload> ticketPayloads;
+
     public double getPrice() {
         return price;
     }

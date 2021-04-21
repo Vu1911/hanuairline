@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.se2.hanuairline.domain.Order;
 import com.se2.hanuairline.PaypalService;
+import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.model.Ticket;
 import com.se2.hanuairline.model.TicketType;
 import com.se2.hanuairline.payload.OrderPayload;
 import com.se2.hanuairline.payload.TicketPayload;
 import com.se2.hanuairline.service.ParsingService;
+import com.se2.hanuairline.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
@@ -40,6 +42,8 @@ public class PaypalController {
     PaypalService service;
 
     @Autowired
+    TicketService ticketService;
+    @Autowired
     private ParsingService parsingService;
 
     public static final String SUCCESS_URL = "pay/success";
@@ -53,61 +57,88 @@ public class PaypalController {
 //        getDataFromOrderAPI();
 //        getDataFromTicketAPI();
 //        postDataToOrderAPI();
-        postDataToTicketAPI();
+//        postDataToTicketAPI();
 
 
         return "home";
     }
 
-    //@ModelAttribute("order")
+    //@ModelAttribute("order"), List<TicketPayload> ticketPayloadList
     @PostMapping("/pay")
-    public String payment(@RequestBody OrderPayload orderPayload, @RequestBody List<TicketPayload> ticketPayloadList) {
+    public String payment(@RequestBody OrderPayload orderPayload) {
         try {
+            /*
+             lấy order lưu trên api -> tạo order mới với id mới
+             Dựa vào các ticketPayload -> lặp qua , gán orderId
+             đẩy order,ticketPayload lên api
+
+             */
 
 
             System.out.println(("In pay"));
-            System.out.println("Order " + ticketPayloadList.toString());
+            System.out.println("Order " + orderPayload.toString());
+            List<Order> orderList = this.getDataFromOrderAPI();
+
+            Order order = this.postDataToOrderAPI(orderPayload);
+            for(TicketPayload ticketPayload : orderPayload.getTicketPayloads()){
+                ticketPayload.setOrder_id(order.getOrderId());
+                this.postDataToTicketAPI(ticketPayload);
+            }
+
+
+
             Payment payment = service.createPayment(orderPayload.getPrice(), orderPayload.getCurrency(), orderPayload.getMethod(),
-                    orderPayload.getIntent(), orderPayload.getDescription(), "http://localhost:8080/" + CANCEL_URL + "/" + orderPayload.getId(),
-                    "http://localhost:8080/" + SUCCESS_URL + "/" + orderPayload.getId());
+                    orderPayload.getIntent(), orderPayload.getDescription(), "http://localhost:8080/payment" + CANCEL_URL + "/" + order.getOrderId(),
+                    "http://localhost:8080/payment/" + SUCCESS_URL + "/" + order.getOrderId());
             for (Links link : payment.getLinks()) {
                 if (link.getRel().equals("approval_url")) {
-                    // create Order over here but not saved to database
-                    // OrderPayload orderPayload = new
-                    //this.orderPayload=OrderPayLoad
+
                     System.out.println("test redirect link :" + "redirect:" + link.getHref());
                     return "redirect:" + link.getHref();
                 }
             }
 
         } catch (PayPalRESTException e) {
-
-            e.printStackTrace();
+            // create Order over here but not saved to database
+            // OrderPayload orderPayload = new
+            //this.orderPayload=OrderPayLoad
+           System.out.println(e.getMessage());
         }
         return "redirect:/";
     }
 
     // if paypal return falied
-    @GetMapping(value = CANCEL_URL)
+    @GetMapping(value = CANCEL_URL+"/{id}")
     public String cancelPay() {
         return
                 "cancel";
     }
 
     // if succcess
-    @GetMapping("pay/success/")
-    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
+    @GetMapping(SUCCESS_URL+"/{id}")
+    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId,@PathVariable("id") Long orderId) {
+            System.out.println("IN here");
+//        return "redirect:/success.html";
         try {
+            System.out.println("OrderId : "+orderId);
             Payment payment = service.executePayment(paymentId, payerId);
             System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {
-                //code để xử lý order và gọi create ticket service
-                // ? làm thế nào để nó lấy được Id của thằng order
+              List<TicketPayload> ticketPayloadList =  this.getDataFromTicketAPI();
+              for(TicketPayload ticketPayload : ticketPayloadList){
+                  if(ticketPayload.getOrder_id()==orderId){
+                    Ticket ticket =  ticketService.createTicket(ticketPayload);
+                      System.out.println("created ticket : " +ticket.toString());
+                  }
+
+              }
 
                 return "success";
             }
         } catch (PayPalRESTException e) {
             System.out.println(e.getMessage());
+        } catch (InvalidInputValueException e) {
+            e.printStackTrace();
         }
         return "redirect:/";
     }
@@ -139,11 +170,22 @@ public class PaypalController {
        return ticketPayloadList;
    }
 
-   private void postDataToOrderAPI(){
-        Order order = new Order(7L,1000000,"VND","paypal","test4","des4");
+   private Order postDataToOrderAPI( OrderPayload orderPayload ){
+//        Order order = new Order(7L,1000000,"VND","paypal","test4","des4");
+       List<Order> orderList = this.getDataFromOrderAPI();
+       Long newId;
+       if(orderList.isEmpty()){
+           newId = 0L;
+       }
+       else{
+           newId =orderList.get(orderList.size()-1).getOrderId()+1;
+       }
+       Order orderToAPI = new Order(newId,orderPayload.getPrice(),orderPayload.getCurrency(),orderPayload.getMethod(),orderPayload.getIntent(),orderPayload.getDescription());
+
+
 
        Gson json = new Gson();
-        String toJson = json.toJson(order);
+        String toJson = json.toJson(orderToAPI);
        toJson = "{\"data\" :["+toJson+"]}";
         System.out.println("response  : "+ toJson);
    HttpHeaders headers = new HttpHeaders();
@@ -158,12 +200,13 @@ public class PaypalController {
        } else {
            System.out.println("Fail create order!!");
        }
+       return orderToAPI;
 
 
    }
 
-   private void postDataToTicketAPI(){
-        TicketPayload ticketPayload = new TicketPayload(3L,2L,"D1-3",CHILDREN,1L);
+   private void postDataToTicketAPI( TicketPayload ticketPayload){
+//        TicketPayload ticketPayload = new TicketPayload(3L,2L,"D1-3",CHILDREN,1L);
        Gson json = new Gson();
        String toJson = json.toJson(ticketPayload);
        toJson = "{"+"\n"+"\"data\" :["+"\n"+toJson+"\n"+"]"+"\n"+"}";
