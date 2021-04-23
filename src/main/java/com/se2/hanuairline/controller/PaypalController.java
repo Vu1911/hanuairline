@@ -12,8 +12,11 @@ import com.se2.hanuairline.payload.OrderPayload;
 import com.se2.hanuairline.payload.TicketPayload;
 import com.se2.hanuairline.service.ParsingService;
 import com.se2.hanuairline.service.TicketService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +36,7 @@ import static com.se2.hanuairline.model.TicketType.CHILDREN;
 // controller
 @Controller
 @RequestMapping("/payment")
+
 public class PaypalController {
 
     @Autowired
@@ -95,6 +99,7 @@ public class PaypalController {
 
                     System.out.println("test redirect link :" + "redirect:" + link.getHref());
                     return "redirect:" + link.getHref();
+
                 }
             }
 
