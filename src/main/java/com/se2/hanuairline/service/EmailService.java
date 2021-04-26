@@ -93,6 +93,6 @@ public class EmailService {
 		model.put("ticketId", ticket.getId());
 		
 		Mail mail = createMail(ticket.getUser().getEmail(), model, "HanuAirLine: E-Ticket");
-		sendSimpleMessage(mail, "test.html");
+		sendSimpleMessage(mail, "email-ticket.html");
 	}
 }
