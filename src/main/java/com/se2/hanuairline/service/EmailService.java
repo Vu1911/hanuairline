@@ -38,8 +38,6 @@ public class EmailService {
 		MimeMessageHelper helper = new MimeMessageHelper(message,
 				MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
 				StandardCharsets.UTF_8.name());
-		// logo
-		helper.addAttachment("Hanu_logo.jpg", new ClassPathResource("/static/images/Hanu_logo.jpg"));
 		
 		Context context = new Context();
 		context.setVariables(mail.getModel());

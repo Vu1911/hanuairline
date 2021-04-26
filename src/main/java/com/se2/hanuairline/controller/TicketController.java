@@ -74,7 +74,7 @@ public class TicketController {
         } catch (Exception e) { // fix here
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }  
 
     // no update available
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })

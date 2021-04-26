@@ -47,9 +47,6 @@ public class TicketService {
     private AircraftService aircraftService;
 
     @Autowired
-    private AircraftTypeService aircraftTypeService;
-
-    @Autowired
     private SeatsByClassService seatsByClassService;
 
 
