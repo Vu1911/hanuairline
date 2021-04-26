@@ -3,8 +3,8 @@ spring:
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com
-    username: 1701040163@s.hanu.edu.vn
-    password: tungvu101
+    username: hanuairline@gmail.com
+    password: 1234&Qwer
     port: 587
     protocol: smtp
     test-connection: false

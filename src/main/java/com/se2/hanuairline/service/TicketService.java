@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+
 @Service
 public class TicketService {
 
@@ -49,12 +51,14 @@ public class TicketService {
     @Autowired
     private SeatsByClassService seatsByClassService;
 
+    @Autowired
+    private EmailService emailService;
 
 //    public int getNumberOfTicketsByFlightId(Long flight_id){
 //        return ticketRepository.countByFlight_Id(flight_id);
 //    }
 
-    public Ticket createTicket (TicketPayload request) throws InvalidInputValueException {
+    public Ticket createTicket (TicketPayload request) throws InvalidInputValueException, MessagingException {
         User user = userService.getUserById(request.getUser_id());
         Flight flight = flightService.getById(request.getFlight_id());
         AircraftSeat aircraftSeat = aircraftSeatService.getAircraftSeatById(request.getAircraftSeat_id());
@@ -84,6 +88,9 @@ public class TicketService {
         ticket.setType(request.getType());
 
         Ticket _ticket = ticketRepository.save(ticket);
+        emailService.verifyTicketByEmail(ticket);
+        
+        
         return _ticket;
 
     }
