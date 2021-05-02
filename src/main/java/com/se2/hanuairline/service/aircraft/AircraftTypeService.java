@@ -1,5 +1,6 @@
 package com.se2.hanuairline.service.aircraft;
 
+import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.model.aircraft.AircraftType;
 import com.se2.hanuairline.payload.aircraft.AircraftTypePayload;
@@ -65,7 +66,7 @@ public class AircraftTypeService {
     // Can not update an aircraftType
 
     // Can only delete when there is no aircraft belongs to this aircraft type
-    public boolean deleteAircraftType(long id){
+    public boolean deleteAircraftType(long id) throws InvalidInputValueException {
         Optional<AircraftType> aircraftTypeData = aircraftTypeRepository.findById(id);
 
         if(!aircraftTypeData.isPresent()){
@@ -75,11 +76,13 @@ public class AircraftTypeService {
         AircraftType aircraftType = aircraftTypeData.get();
 
         if(!checkNewAircraftType(aircraftType)){
-            return false;
+            throw new InvalidInputValueException("This aircraft type has been assigned to at least an aircraft");
         }
 
-        if(!seatsByClassService.deleteByAircraftType(aircraftType)){
-            return false;
+        if(aircraftType.validateSeatByClass()){
+            if(!seatsByClassService.deleteByAircraftType(aircraftType)){
+                throw new InvalidInputValueException("This aircraft type fails to delete its seats structure");
+            }
         }
 
         aircraftTypeRepository.delete(aircraftType);

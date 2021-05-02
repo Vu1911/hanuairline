@@ -115,4 +115,8 @@ public class AircraftType extends DateAudit implements Cloneable{
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    public boolean validateSeatByClass(){
+        return this.seatsByClassSet.size() != 0;
+    }
 }

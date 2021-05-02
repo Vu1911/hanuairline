@@ -22,6 +22,6 @@ public interface SeatsByClassRepository extends JpaRepository<SeatsByClass, Long
 
     List<SeatsByClass> findByAircraftType_Id(Long id);
 
-    void deleteAllByAircraftType(AircraftType aircraftType);
+    void deleteByAircraftType(AircraftType aircraftType);
 
 }

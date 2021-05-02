@@ -1,5 +1,6 @@
 package com.se2.hanuairline.controller.aircraft;
 
+import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.model.aircraft.AircraftType;
 import com.se2.hanuairline.payload.aircraft.AircraftTypePayload;
 import com.se2.hanuairline.service.aircraft.AircraftTypeService;
@@ -67,13 +68,9 @@ public class AircraftTypeController {
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/admin/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteAircraftType(@PathVariable("id") long id) {
-        try {
-            aircraftTypeService.deleteAircraftType(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<HttpStatus> deleteAircraftType(@PathVariable("id") long id) throws InvalidInputValueException {
+        aircraftTypeService.deleteAircraftType(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

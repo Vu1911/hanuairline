@@ -1,5 +1,6 @@
 package com.se2.hanuairline.service.aircraft;
 
+import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.exception.NoResultException;
 import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.aircraft.Aircraft;
@@ -60,17 +61,23 @@ public class AircraftService {
     }
 
 
-    public Aircraft createAircraft (AircraftPayload request){
+    public Aircraft createAircraft (AircraftPayload request) throws InvalidInputValueException {
         Optional<AircraftType> aircraftTypeData = aircraftTypeRepository.findById(request.getAircraft_type_id());
 
         if (!aircraftTypeData.isPresent()) {
             return null;
         }
 
+        AircraftType aircraftType = aircraftTypeData.get();
+
+        if (!aircraftType.validateSeatByClass()){
+            throw new InvalidInputValueException("The aircraft type is not ready");
+        }
+
         Aircraft aircraft = new Aircraft();
         aircraft.setName(request.getName());
         aircraft.setStatus(AircraftStatus.valueOf(request.getStatus()));
-        aircraft.setAircraftType(aircraftTypeData.get());
+        aircraft.setAircraftType(aircraftType);
 
         Aircraft _aircraft = aircraftRepository
                 .save(aircraft);;

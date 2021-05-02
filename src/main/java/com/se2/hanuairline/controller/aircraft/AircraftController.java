@@ -1,5 +1,6 @@
 package com.se2.hanuairline.controller.aircraft;
 
+import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.model.Flight;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.payload.aircraft.AircraftPayload;
@@ -72,18 +73,15 @@ public class AircraftController {
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @Secured("ROLE_ADMIN")
     @PostMapping("/admin/create")
-    public ResponseEntity<?> createAircraft(@RequestBody AircraftPayload request) {
-        try {
-            Aircraft _aircraft = aircraftService.createAircraft(request);
+    public ResponseEntity<?> createAircraft(@RequestBody AircraftPayload request) throws InvalidInputValueException {
+        Aircraft _aircraft = aircraftService.createAircraft(request);
 
-            if (_aircraft == null) {
-                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-            }
-
-            return new ResponseEntity<>(_aircraft, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (_aircraft == null) {
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
+
+        return new ResponseEntity<>(_aircraft, HttpStatus.CREATED);
+
     }
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
