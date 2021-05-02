@@ -43,7 +43,7 @@ public class AircraftSeatController {
     }
 
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/admin/getById/{id}")
     public ResponseEntity<?> getAircraftSeatById(@PathVariable("id") String id) {
         AircraftSeat aircraftSeat = aircraftSeatService.getAircraftSeatById(id);
