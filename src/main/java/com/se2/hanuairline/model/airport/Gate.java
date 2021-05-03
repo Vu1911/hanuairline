@@ -21,6 +21,7 @@ public class Gate implements Cloneable {
 
     @ManyToOne
     @JoinColumn(name = "airport_id")
+    @JsonIgnore
     private Airport airport;
 
     @NotBlank

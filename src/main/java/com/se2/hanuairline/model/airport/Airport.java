@@ -45,7 +45,6 @@ public class Airport implements Cloneable {
     private AirportStatus status;
 
     @OneToMany(mappedBy = "airport")
-    @JsonIgnore
     private Set<Gate> gates;
 
 
@@ -118,7 +117,6 @@ public class Airport implements Cloneable {
         this.status = status;
     }
 
-    @JsonIgnore
     public Set<Gate> getGates() {
         return gates;
     }
@@ -127,7 +125,6 @@ public class Airport implements Cloneable {
         this.gates = gates;
     }
 
-    @JsonIgnore
     public Set<Airway> getAirway1() {
         return airway1;
     }
@@ -136,7 +133,6 @@ public class Airport implements Cloneable {
         this.airway1 = airway1;
     }
 
-    @JsonIgnore
     public Set<Airway> getAirway2() {
         return airway2;
     }
