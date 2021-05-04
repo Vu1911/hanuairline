@@ -103,11 +103,11 @@ public class FlightController {
     }
 
 
-    @PutMapping("/admin/updateTime")
-    public ResponseEntity<?> updateTimeFlight(@Valid @RequestBody FlightPayload flight){
+    @PutMapping("/admin/updateTime/{id}")
+    public ResponseEntity<?> updateTimeFlight(@Valid @RequestBody FlightPayload flight, @RequestParam Long id){
     	try {
-            flightService.updateTimeFlight(flight.getId(), flight.getDeparture_time(), flight.getArrival_time(), flight.getArrival_gate_id(), flight.getArrival_gate_id());    
-            emailService.updateTimeThenSendEmail(flightService.getById(flight.getId()));
+            flightService.updateTimeFlight(id, flight.getDeparture_time(), flight.getArrival_time(), flight.getArrival_gate_id(), flight.getArrival_gate_id());
+            emailService.updateTimeThenSendEmail(flightService.getById(id));
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);

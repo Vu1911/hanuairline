@@ -35,7 +35,6 @@ public class Airway implements Cloneable {
     private Set<Flight> flight;
 
     @OneToMany(mappedBy = "airway")
-    @JsonIgnore
     private Set<PriceByClass> priceByClasses;
 
     public Airway(Long id, Airport departure_airport, Airport arrival_airport, @NotBlank @NotNull int distance_km) {
