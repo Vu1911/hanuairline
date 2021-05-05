@@ -7,6 +7,8 @@ public class CartPayload {
 
     private Long userId;
 
+    private Long airwayId;
+
     private Set<GetTicketPricePayload> getTicketPricePayloads;
 
     public CartPayload(Long flightId, Long userId, Set<GetTicketPricePayload> getTicketPricePayloads) {
@@ -17,6 +19,14 @@ public class CartPayload {
 
     public Long getFlightId() {
         return flightId;
+    }
+
+    public Long getAirwayId() {
+        return airwayId;
+    }
+
+    public void setAirwayId(Long airwayId) {
+        this.airwayId = airwayId;
     }
 
     public void setFlightId(Long flightId) {

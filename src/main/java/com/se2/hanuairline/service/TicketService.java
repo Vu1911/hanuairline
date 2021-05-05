@@ -212,7 +212,7 @@ public class TicketService {
 
         for(GetTicketPricePayload requestTicket : request.getGetTicketPricePayloads()){
             String travelClassName = requestTicket.getSeatId().substring(0,1);
-            PriceByClass priceByClass = priceByClassService.getPriceByClassByClassNameAndAirwayId(travelClassName, requestTicket.getAirwayId());
+            PriceByClass priceByClass = priceByClassService.getPriceByClassByClassNameAndAirwayId(travelClassName, request.getAirwayId());
             int price = priceByClass.getPrice();
 
             if(requestTicket.getTicketType().equals(TicketType.CHILDREN)){
