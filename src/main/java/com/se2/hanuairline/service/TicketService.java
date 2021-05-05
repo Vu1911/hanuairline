@@ -2,15 +2,14 @@ package com.se2.hanuairline.service;
 
 import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.exception.NoResultException;
-import com.se2.hanuairline.model.Flight;
-import com.se2.hanuairline.model.Ticket;
-import com.se2.hanuairline.model.TicketStatus;
-import com.se2.hanuairline.model.TicketType;
+import com.se2.hanuairline.model.*;
 import com.se2.hanuairline.model.aircraft.Aircraft;
 import com.se2.hanuairline.model.aircraft.AircraftSeat;
 //import com.se2.hanuairline.model.aircraft.AircraftType;
 import com.se2.hanuairline.model.aircraft.SeatsByClass;
 import com.se2.hanuairline.model.user.User;
+import com.se2.hanuairline.payload.CartPayload;
+import com.se2.hanuairline.payload.GetTicketPricePayload;
 import com.se2.hanuairline.payload.TicketPayload;
 import com.se2.hanuairline.repository.TicketRepository;
 import com.se2.hanuairline.security.JwtTokenProvider;
@@ -25,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +50,9 @@ public class TicketService {
 
     @Autowired
     private SeatsByClassService seatsByClassService;
+
+    @Autowired
+    private PriceByClassService priceByClassService;
 
     @Autowired
     private EmailService emailService;
@@ -204,5 +207,32 @@ public class TicketService {
 
     }
 
+    public List<TicketPayload> getTicketPrice(CartPayload request) throws InvalidInputValueException {
+        List<TicketPayload> results = new ArrayList<TicketPayload>();
+
+        for(GetTicketPricePayload requestTicket : request.getGetTicketPricePayloads()){
+            String travelClassName = requestTicket.getSeatId().substring(0,1);
+            PriceByClass priceByClass = priceByClassService.getPriceByClassByClassNameAndAirwayId(travelClassName, requestTicket.getAirwayId());
+            int price = priceByClass.getPrice();
+
+            if(requestTicket.getTicketType().equals(TicketType.CHILDREN)){
+                price = (int) (price * 70 / 100);
+            }
+
+            TicketPayload ticketPayload = new TicketPayload();
+            ticketPayload.setFlight_id(request.getFlightId());
+            ticketPayload.setStatus(TicketStatus.AVAILABLE);
+            ticketPayload.setOrder_id(null);
+            ticketPayload.setUser_id(request.getUserId());
+            ticketPayload.setType(requestTicket.getTicketType());
+            ticketPayload.setAircraftSeat_id(requestTicket.getSeatId());
+            ticketPayload.setTotalPrice(price);
+            ticketPayload.setId(0L);
+
+            results.add(ticketPayload);
+        }
+
+        return results;
+    }
 
 }

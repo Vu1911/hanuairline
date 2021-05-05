@@ -186,5 +186,14 @@ public class PriceByClassService {
 //        }
     }
 
+    public PriceByClass getPriceByClassByClassNameAndAirwayId(String travelClassName, Long airwayId) throws InvalidInputValueException {
+        Optional<PriceByClass> priceByClass = priceByClassRepository.findByTravelClass_NameAndAirway_Id(travelClassName, airwayId);
+        if (priceByClass.isPresent()){
+            return priceByClass.get();
+        }
+        else{
+            throw new InvalidInputValueException("Cannot find price for the given airway and travel class");
+        }
+    }
 }
 

@@ -99,5 +99,10 @@ public class AirwayService {
 
     }
 
+    public List<Airway> findAirwayByDeparturAirportName(String departureAirportName){
+        List<Airway> airways = airwayRepository.findAirwayByDepartureAirport_NameContainingOrDepartureAirport_CityContaining(departureAirportName, departureAirportName);
+        return airways;
+    }
+
 
 }

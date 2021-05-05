@@ -14,4 +14,6 @@ public interface PriceByClassRepository extends JpaRepository<PriceByClass,Long>
     Optional<PriceByClass> findById(Long id);
 
     Optional<PriceByClass> findByAirway_IdAndTravelClass_Name(Long airway_id, String travelclass_name);
+
+    Optional<PriceByClass> findByTravelClass_NameAndAirway_Id(String travelClassName, Long airwayId);
 }

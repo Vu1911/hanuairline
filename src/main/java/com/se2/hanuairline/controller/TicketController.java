@@ -1,6 +1,8 @@
 package com.se2.hanuairline.controller;
 
+import com.se2.hanuairline.exception.InvalidInputValueException;
 import com.se2.hanuairline.model.Ticket;
+import com.se2.hanuairline.payload.CartPayload;
 import com.se2.hanuairline.payload.TicketPayload;
 import com.se2.hanuairline.repository.TicketRepository;
 import com.se2.hanuairline.service.TicketService;
@@ -106,5 +108,11 @@ public class TicketController {
         List<Ticket> tickets = ticketService.getByFlightId(flightId);
 
         return new ResponseEntity<>(tickets, HttpStatus.OK);
+    }
+
+    @PostMapping("/getTicketsPrices")
+    public ResponseEntity<?> getTicketsPrices (@RequestBody CartPayload request) throws InvalidInputValueException {
+        List<TicketPayload> ticketPayloads = ticketService.getTicketPrice(request);
+        return new ResponseEntity<>(ticketPayloads, HttpStatus.OK);
     }
 }

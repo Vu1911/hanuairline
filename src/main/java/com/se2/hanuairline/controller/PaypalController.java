@@ -25,6 +25,7 @@ import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.mail.MessagingException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -142,7 +143,7 @@ public class PaypalController {
             }
         } catch (PayPalRESTException e) {
             System.out.println(e.getMessage());
-        } catch (InvalidInputValueException e) {
+        } catch (InvalidInputValueException | MessagingException e) {
             e.printStackTrace();
         }
         return "redirect:/";

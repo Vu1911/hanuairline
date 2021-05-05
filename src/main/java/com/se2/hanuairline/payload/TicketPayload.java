@@ -31,6 +31,7 @@ public class TicketPayload {
 
     private TicketType type;
 
+    private int totalPrice;
 
     public TicketPayload(Long user_id, Long flight_id, String aircraftSeat_id ,TicketType ticketType,Long order_id) {
 
@@ -104,6 +105,14 @@ public class TicketPayload {
 
     public void setOrder_id(Long order_id) {
         this.order_id = order_id;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     @Override

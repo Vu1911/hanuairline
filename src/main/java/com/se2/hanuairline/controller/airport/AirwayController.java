@@ -98,4 +98,10 @@ public class AirwayController {
         return new ResponseEntity<>(airway, HttpStatus.OK);
     }
 
+    @GetMapping("/findByDepartureAirwayName/{departureAirwayName}")
+    public ResponseEntity<?> findByDepatureName(@PathVariable String departureAirwayName){
+        List<Airway> airways = airwayService.findAirwayByDeparturAirportName(departureAirwayName);
+        return new ResponseEntity<>(airways, HttpStatus.OK);
+    }
+
 }
