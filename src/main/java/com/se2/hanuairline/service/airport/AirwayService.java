@@ -28,11 +28,16 @@ public class AirwayService {
     @Autowired
     private TravelClassService travelClassService;
 
-    public Page<Airway> findAll (int page, int size, String[] sort, String departureAirway){
+    public Page<Airway> findAll (int page, int size, String[] sort, String departureAirway, boolean checkSetPrice){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
-        if (departureAirway == null){
-
+        if (departureAirway == null && checkSetPrice == false){
             return airwayRepository.findAll(pagingSort);
+        }
+        else if (departureAirway != null && checkSetPrice == true) {
+            return airwayRepository.findAirwayByDepartureAirport_NameContainingOrDepartureAirport_CityContainingAndPriceByClassesIsNotNull(departureAirway, departureAirway, pagingSort);
+        }
+        else if (departureAirway == null && checkSetPrice == true){
+            return airwayRepository.findAllByPriceByClassesIsNotNull(pagingSort);
         }
         else {
             return airwayRepository.findAirwayByDepartureAirport_NameContainingOrDepartureAirport_CityContaining(departureAirway, departureAirway, pagingSort);

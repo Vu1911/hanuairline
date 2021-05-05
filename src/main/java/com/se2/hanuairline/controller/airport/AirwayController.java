@@ -34,11 +34,12 @@ public class AirwayController {
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllAirway(@RequestParam(required = false) String departureAircraftName,
+                                          @RequestParam(required = false, defaultValue = "false") boolean checkSetPrice,
                                           @RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
                                           @RequestParam(defaultValue = "id,desc") String[] sort) {
         try {
-            Page<Airway> airways = airwayService.findAll(page, size, sort, departureAircraftName);
+            Page<Airway> airways = airwayService.findAll(page, size, sort, departureAircraftName, checkSetPrice);
 
             return new ResponseEntity<>(airways, HttpStatus.OK);
         } catch (Exception e){
