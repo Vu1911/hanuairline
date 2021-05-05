@@ -61,20 +61,22 @@ public class TicketController {
         }
     }
 
-    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
-    @PostMapping("/create")
-    public ResponseEntity<?> createTicket(@Valid @RequestBody TicketPayload request) {
-        try {
-            Ticket ticket = ticketService.createTicket(request);
-            if(ticket == null){
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
-            }
-           return new ResponseEntity<>(ticket, HttpStatus.CREATED);
-        } catch (Exception e) { // fix here
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }  
+
+    // bo creat ticket đi
+//    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+//    @Secured({"ROLE_USER","ROLE_ADMIN"})
+//    @PostMapping("/create")
+//    public ResponseEntity<?> createTicket(@Valid @RequestBody TicketPayload request) {
+//        try {
+//            Ticket ticket = ticketService.createTicket(request);
+//            if(ticket == null){
+//                return new ResponseEntity<>(HttpStatus.CONFLICT);
+//            }
+//           return new ResponseEntity<>(ticket, HttpStatus.CREATED);
+//        } catch (Exception e) { // fix here
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     // no update available
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })

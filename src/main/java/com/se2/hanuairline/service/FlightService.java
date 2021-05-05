@@ -10,6 +10,7 @@ import java.util.Optional;
 import com.se2.hanuairline.model.*;
 import com.se2.hanuairline.model.aircraft.AircraftSeat;
 import com.se2.hanuairline.payload.output.AircraftSeatOutputPayload;
+import com.se2.hanuairline.service.aircraft.AircraftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -71,6 +72,9 @@ public class FlightService {
 
     @Autowired
     private TravelClassService travelClassService;
+
+    @Autowired
+    private AircraftService aircraftService;
 
     // flight validated
     // lay cac seats
@@ -154,6 +158,11 @@ public class FlightService {
         if(check.isPresent()){
             throw new InvalidInputValueException("Flight với departure_time :"+request.getDeparture_time()+" arrival time: "+request.getArrival_time()+" departure_gate_id "+request.getDeparture_gate_id()+" arrival_gate_id "+request.getArrival_gate_id());
         }
+        // check aircraftId
+        if(aircraftService.getAircraftById(request.getAircraft_id())==null){
+            throw new InvalidInputValueException("Aircraft_id not exist :"+request.getAircraft_id());
+
+        };
 
         Flight flight = new Flight();
 
@@ -326,18 +335,18 @@ public class FlightService {
         List<Flight> filteredByTimeFlights = new ArrayList<Flight>();
 
         String searchDepartureDate = searchPayload.getDepartureTime().toString();
-        String  searchArrivalDate =  searchPayload.getArrivalTime().toString();
+//        String  searchArrivalDate =  searchPayload.getArrivalTime().toString();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         for (Flight flight : filteredByLoactionFlights) {
             // Xu ly date của flight
             Date flightDepartureDate = Date.from(flight.getDepartureTime());
             Date flightArrivalDate = Date.from(flight.getArrivalTime());
             String flightDepartureDateString = simpleDateFormat.format(flightDepartureDate);
-            String flightArrivalDateString = simpleDateFormat.format(flightArrivalDate);
+//            String flightArrivalDateString = simpleDateFormat.format(flightArrivalDate);
             System.out.println("biến flightDepartureDateString sau khi được convert : "+flightDepartureDateString);
-            System.out.println("biến flightArrivalDateString sau khi được convert : "+flightArrivalDateString);
-
-            if (flightDepartureDateString.equals(searchDepartureDate) && flightArrivalDateString.equals(searchArrivalDate)) {
+//            System.out.println("biến flightArrivalDateString sau khi được convert : "+flightArrivalDateString);
+    //&& flightArrivalDateString.equals(searchArrivalDate)
+            if (flightDepartureDateString.equals(searchDepartureDate) ) {
                 filteredByTimeFlights.add(flight);
             }
         }
