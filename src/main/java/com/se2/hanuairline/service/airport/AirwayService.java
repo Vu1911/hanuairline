@@ -34,13 +34,13 @@ public class AirwayService {
             return airwayRepository.findAll(pagingSort);
         }
         else if (departureAirway != null && checkSetPrice == true) {
-            return airwayRepository.findAirwayByPriceByClassesIsNotNullAndDepartureAirport_NameContainingOrDepartureAirport_CityContaining(departureAirway, departureAirway, pagingSort);
+            return airwayRepository.findDistinctByPriceByClassesIsNotNullAndDepartureAirport_NameContainingOrDepartureAirport_CityContaining(departureAirway, departureAirway, pagingSort);
         }
         else if (departureAirway == null && checkSetPrice == true){
-            return airwayRepository.findAllByPriceByClassesIsNotNull(pagingSort);
+            return airwayRepository.findDistinctByPriceByClassesIsNotNull(pagingSort);
         }
         else {
-            return airwayRepository.findAirwayByDepartureAirport_NameContainingOrDepartureAirport_CityContainingAndPriceByClassesIsNotNull(departureAirway, departureAirway, pagingSort);
+            return airwayRepository.findDistinctByDepartureAirport_NameContainingOrDepartureAirport_CityContainingAndPriceByClassesIsNotNull(departureAirway, departureAirway, pagingSort);
         }
     }
 

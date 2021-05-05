@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface AirwayRepository extends JpaRepository<Airway, Long> {
     Page<Airway> findAll (Pageable pageable);
 
-    Page<Airway> findAllByPriceByClassesIsNotNull (Pageable pageable);
+    Page<Airway> findDistinctByPriceByClassesIsNotNull (Pageable pageable);
 
 
     Airway findDistinctByArrivalAirport_NameAndAndDepartureAirport_Name(String arrivalAirportName, String departureAirportName);
@@ -26,7 +26,7 @@ public interface AirwayRepository extends JpaRepository<Airway, Long> {
 
     Page<Airway> findAirwayByDepartureAirport_NameContainingOrDepartureAirport_CityContaining(String departureAirportName, String departureAirportCityName, Pageable pageable);
 
-    Page<Airway> findAirwayByDepartureAirport_NameContainingOrDepartureAirport_CityContainingAndPriceByClassesIsNotNull(String departureAirportName, String departureAirportCityName, Pageable pageable);
+    Page<Airway> findDistinctByDepartureAirport_NameContainingOrDepartureAirport_CityContainingAndPriceByClassesIsNotNull(String departureAirportName, String departureAirportCityName, Pageable pageable);
 
-    Page<Airway> findAirwayByPriceByClassesIsNotNullAndDepartureAirport_NameContainingOrDepartureAirport_CityContaining(String departureAirportName, String departureAirportCityName, Pageable pageable);
+    Page<Airway> findDistinctByPriceByClassesIsNotNullAndDepartureAirport_NameContainingOrDepartureAirport_CityContaining(String departureAirportName, String departureAirportCityName, Pageable pageable);
 }
