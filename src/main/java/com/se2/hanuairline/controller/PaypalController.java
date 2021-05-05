@@ -35,9 +35,8 @@ import static com.se2.hanuairline.model.TicketType.CHILDREN;
 // problem : choose correct server , how to send data to sheetdb || database của anh hưng -> không khả quan vì nó không cho lưu
 // post lên sheetdb -> cần có dạng
 // controller
-@Controller
+@RestController
 @RequestMapping("/payment")
-
 public class PaypalController {
 
     @Autowired
