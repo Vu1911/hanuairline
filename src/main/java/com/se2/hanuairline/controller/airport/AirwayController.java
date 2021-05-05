@@ -33,11 +33,12 @@ public class AirwayController {
     private AirwayService airwayService;
 
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAllAirway(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<?> getAllAirway(@RequestParam(required = false) String departureAirwayName,
+                                          @RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
                                           @RequestParam(defaultValue = "id,desc") String[] sort) {
         try {
-            Page<Airway> airways = airwayService.findAll(page, size, sort);
+            Page<Airway> airways = airwayService.findAll(page, size, sort, departureAirwayName);
 
             return new ResponseEntity<>(airways, HttpStatus.OK);
         } catch (Exception e){
@@ -96,12 +97,6 @@ public class AirwayController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(airway, HttpStatus.OK);
-    }
-
-    @GetMapping("/findByDepartureAirwayName/{departureAirwayName}")
-    public ResponseEntity<?> findByDepatureName(@PathVariable String departureAirwayName){
-        List<Airway> airways = airwayService.findAirwayByDeparturAirportName(departureAirwayName);
-        return new ResponseEntity<>(airways, HttpStatus.OK);
     }
 
 }

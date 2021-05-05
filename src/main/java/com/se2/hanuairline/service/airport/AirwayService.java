@@ -28,10 +28,15 @@ public class AirwayService {
     @Autowired
     private TravelClassService travelClassService;
 
-    public Page<Airway> findAll (int page, int size, String[] sort){
+    public Page<Airway> findAll (int page, int size, String[] sort, String departureAirway){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
+        if (departureAirway == null){
 
-        return airwayRepository.findAll(pagingSort);
+            return airwayRepository.findAll(pagingSort);
+        }
+        else {
+            return airwayRepository.findAirwayByDepartureAirport_NameContainingOrDepartureAirport_CityContaining(departureAirway, departureAirway, pagingSort);
+        }
     }
 
     public Airway findByArrivalCityAndDepartureCity (String arrivalCity, String departureCity){
@@ -99,10 +104,6 @@ public class AirwayService {
 
     }
 
-    public List<Airway> findAirwayByDeparturAirportName(String departureAirportName){
-        List<Airway> airways = airwayRepository.findAirwayByDepartureAirport_NameContainingOrDepartureAirport_CityContaining(departureAirportName, departureAirportName);
-        return airways;
-    }
 
 
 }
