@@ -39,4 +39,6 @@ public interface FlightRepository extends JpaRepository<Flight, Long>, CrudRepos
 
     Flight findDistinctFirstByAircraft(Aircraft aircraft, Sort sort);
 
+    void deleteById(Long id);
+
 }
