@@ -141,9 +141,9 @@ public class PaypalController {
                 return "success";
             }
         } catch (PayPalRESTException e) {
-            System.out.println(e.getMessage());
+            return e.getMessage();
         } catch (InvalidInputValueException | MessagingException e) {
-            e.printStackTrace();
+            return e.getMessage();
         }
         return "redirect:/";
     }
