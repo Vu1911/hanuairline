@@ -48,6 +48,7 @@ public class DiscountEvent extends DateAudit implements Cloneable {
         this.discountRate = discountRate;
     }
 
+    @JsonIgnore
     public Set<Flight> getFlight() {
         return flight;
     }
