@@ -100,9 +100,11 @@ public class FlightController {
     @PutMapping("/admin/updateTime/{id}")
     public ResponseEntity<?> updateTimeFlight(@Valid @RequestBody FlightPayload flight, @RequestParam Long id){
     	try {
-            flightService.updateTimeFlight(id, flight.getDeparture_time(), flight.getArrival_time(), flight.getArrival_gate_id(), flight.getArrival_gate_id());
-            emailService.updateTimeThenSendEmail(flightService.getById(id));
-            return new ResponseEntity<>(HttpStatus.OK);
+            if(flightService.updateTimeFlight(id, flight.getDeparture_time(), flight.getArrival_time(), flight.getArrival_gate_id(), flight.getArrival_gate_id())){
+                emailService.updateTimeThenSendEmail(flightService.getById(id));
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>("update time is conflict!", HttpStatus.CONFLICT);
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
