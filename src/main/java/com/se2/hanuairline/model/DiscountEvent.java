@@ -21,7 +21,6 @@ public class DiscountEvent extends DateAudit implements Cloneable {
     private int discountRate;
 
     @ManyToMany(mappedBy = "discount",cascade = {CascadeType.REMOVE})
-    @JsonIgnore
     private Set<Flight> flight;
 
     public DiscountEvent(@NotBlank @NotNull int discountRate) {
@@ -46,15 +45,6 @@ public class DiscountEvent extends DateAudit implements Cloneable {
 
     public void setDiscountRate(int discountRate) {
         this.discountRate = discountRate;
-    }
-
-    @JsonIgnore
-    public Set<Flight> getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Set<Flight> flight) {
-        this.flight = flight;
     }
 
     @Override
