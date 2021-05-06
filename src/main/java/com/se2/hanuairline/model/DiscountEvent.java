@@ -58,6 +58,7 @@ public class DiscountEvent extends DateAudit implements Cloneable {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
+        System.out.println("OK");
         return super.clone();
     }
 }
