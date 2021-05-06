@@ -17,7 +17,7 @@ public class DiscountEvent extends DateAudit implements Cloneable {
 
     @NotBlank
     @NotNull
-    private int discountRate;
+    private double discountRate;
 
     @ManyToMany(mappedBy = "discount",cascade = {CascadeType.REMOVE})
     private Set<Flight> flight;
@@ -38,11 +38,11 @@ public class DiscountEvent extends DateAudit implements Cloneable {
         this.id = id;
     }
 
-    public int getDiscountRate() {
+    public double getDiscountRate() {
         return discountRate;
     }
 
-    public void setDiscountRate(int discountRate) {
+    public void setDiscountRate(double discountRate) {
         this.discountRate = discountRate;
     }
 
@@ -52,6 +52,15 @@ public class DiscountEvent extends DateAudit implements Cloneable {
 
     public void setFlight(Set<Flight> flight) {
         this.flight = flight;
+    }
+
+    @Override
+    public String toString() {
+        return "DiscountEvent{" +
+                "id=" + id +
+                ", discountRate=" + discountRate +
+
+                '}';
     }
 
     @Override

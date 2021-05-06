@@ -2,10 +2,7 @@ package com.se2.hanuairline.service;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import com.se2.hanuairline.model.*;
 import com.se2.hanuairline.model.aircraft.AircraftSeat;
@@ -75,6 +72,9 @@ public class FlightService {
 
     @Autowired
     private AircraftService aircraftService;
+
+    @Autowired
+    private DiscountEventService discountEventService;
 
     // flight validated
     // lay cac seats
@@ -148,10 +148,15 @@ public class FlightService {
     }
 
     public Flight createFlight(FlightPayload request) throws InvalidInputValueException {
+
         Optional<Aircraft> aircraftData = aircraftRepository.findById(request.getAircraft_id());
         Optional<Airway> airwayData = airwayRepository.findById(request.getAirway_id());
         Optional<Gate> arrival_gateData = gateRepository.findById(request.getArrival_gate_id());
         Optional<Gate> departure_gateData = gateRepository.findById(request.getDeparture_gate_id());
+
+        DiscountEvent discountEvent = discountEventService.getById(request.getDiscount_id());
+        System.out.println("DISCOUNT : " +discountEvent);
+
 
         // check duplication
         Optional<Flight> check = flightRepository.findByArrivalTimeAndDepartureTimeAndArrivalGate_IdAndDepartureGate_Id(request.getArrival_time(), request.getDeparture_time(), request.getArrival_gate_id(), request.getDeparture_gate_id());
@@ -171,7 +176,8 @@ public class FlightService {
             if(!discountEventData.isPresent()){
                 throw new InvalidInputValueException("FlightController: discount event not found");
             }
-
+            System.out.println("DISCOUNT EVENT IN CHECK: "+discountEventData.get());
+            flight.setDiscount(new HashSet<DiscountEvent>());
             flight.getDiscount().add(discountEventData.get());
         }
 
@@ -195,6 +201,7 @@ public class FlightService {
             throw new InvalidInputValueException("FlightController: aircraft not found");
         }
 
+
         Aircraft aircraft = aircraftData.get();
         Airway airway = airwayData.get();
         Gate arrivalGate = arrival_gateData.get();
@@ -216,6 +223,8 @@ public class FlightService {
             throw new InvalidInputValueException("FlightController: Aircraft not available");
         }
 
+
+
         flight.setAircraft(aircraft);
         flight.setAirway(airway);
         flight.setArrivalGate(arrival_gateData.get());
@@ -224,7 +233,13 @@ public class FlightService {
         flight.setDepartureTime(request.getDeparture_time());
         flight.setStatus(FlightStatus.valueOf(request.getStatus()));
 
-        Flight _flight = flightRepository.save(flight);
+//        System.out.println("before");
+//        flight.setDiscount(new HashSet<DiscountEvent>()
+//        );
+//        System.out.println("flight discount set : "+flight.getDiscount());
+//        flight.getDiscount().add(discountEvent);
+//
+     Flight _flight = flightRepository.save(flight);
 
         return _flight;
     }
