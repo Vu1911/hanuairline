@@ -117,6 +117,7 @@ public class FlightService {
               if(aircraftSeat.getId().equals(bookedSeatId)){
                  aircraftSeatOutputPayload = new AircraftSeatOutputPayload(aircraftSeat.getId(),aircraftSeat.getTravelClass().getId(), AircraftSeatStatus.BOOKED);
                  bookedSeats.add(aircraftSeatOutputPayload);
+                 notBookedSeats.add(aircraftSeatOutputPayload);
                  check=true;
                  break;
               }
