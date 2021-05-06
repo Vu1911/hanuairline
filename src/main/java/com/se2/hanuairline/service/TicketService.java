@@ -91,11 +91,17 @@ public class TicketService {
         int rate = 0;
 
         for (TaxAndMarkup tax : taxAndMarkups){
+            System.out.println(tax.getFarePercentage());
             int taxRate = tax.getFarePercentage();
             rate += taxRate;
         }
 
-        int price = (int) (request.getTotalPrice()*rate/100);
+        int price = (int) (request.getTotalPrice());
+
+        if (rate!= 0) {
+            price = (int) (request.getTotalPrice()*rate/100);
+        }
+
 
         Ticket ticket = new Ticket();
         ticket.setUser(user);
@@ -242,7 +248,10 @@ public class TicketService {
                 rate += taxRate;
             }
 
-            price = (int) (price*rate/100);
+            if (rate != 0){
+                price = (int) (price*rate/100);
+            }
+
 
             TicketPayload ticketPayload = new TicketPayload();
             ticketPayload.setFlight_id(request.getFlightId());

@@ -92,8 +92,8 @@ public class PaypalController {
 
 
             Payment payment = service.createPayment(orderPayload.getPrice(), orderPayload.getCurrency(), orderPayload.getMethod(),
-                    orderPayload.getIntent(), orderPayload.getDescription(), "http://hanuairline.azurewebsites.net/payment" + CANCEL_URL + "/" + order.getOrderId(),
-                    "http://hanuairline.azurewebsites.net/payment/" + SUCCESS_URL + "/" + order.getOrderId());
+                    orderPayload.getIntent(), orderPayload.getDescription(), "http://localhost:8080/payment" + CANCEL_URL + "/" + order.getOrderId(),
+                    "http://localhost:8080/payment/" + SUCCESS_URL + "/" + order.getOrderId());
             for (Links link : payment.getLinks()) {
                 if (link.getRel().equals("approval_url")) {
 
@@ -146,7 +146,7 @@ public class PaypalController {
         } catch (InvalidInputValueException | MessagingException e) {
             return "from me" + e.getMessage();
         } catch (Exception e){
-            return "me fail";
+            return e.getMessage();
         }
         return "redirect:/";
     }

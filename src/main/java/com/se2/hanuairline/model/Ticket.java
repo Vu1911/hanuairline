@@ -8,6 +8,7 @@ import com.se2.hanuairline.model.audit.DateAudit;
 import com.se2.hanuairline.model.user.User;
 import com.se2.hanuairline.repository.TaxAndMarkupRepository;
 import com.sun.istack.Nullable;
+import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
