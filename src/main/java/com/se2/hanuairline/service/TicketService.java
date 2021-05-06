@@ -87,13 +87,23 @@ public class TicketService {
            throw new InvalidInputValueException("Vé đã có người đặt");
        };
 
+       List<TaxAndMarkup> taxAndMarkups = taxAndMarkupRepository.findAll();
+        int rate = 0;
+
+        for (TaxAndMarkup tax : taxAndMarkups){
+            int taxRate = tax.getFarePercentage();
+            rate += taxRate;
+        }
+
+        int price = (int) (request.getTotalPrice()*rate/100);
+
         Ticket ticket = new Ticket();
         ticket.setUser(user);
         ticket.setFlight(flight);
         ticket.setAircraftSeat(aircraftSeat);
         ticket.setStatus(TicketStatus.BOOKED);
         ticket.setType(request.getType());
-        ticket.setTotalPrice(request.getTotalPrice(), taxAndMarkupRepository);
+        ticket.setTotalPrice(request.getTotalPrice());
 
         Ticket _ticket = ticketRepository.save(ticket);
         emailService.verifyTicketByEmail(ticket);
@@ -223,6 +233,16 @@ public class TicketService {
             if(requestTicket.getTicketType().equals(TicketType.CHILDREN)){
                 price = (int) (price * 70 / 100);
             }
+
+            List<TaxAndMarkup> taxAndMarkups = taxAndMarkupRepository.findAll();
+            int rate = 0;
+
+            for (TaxAndMarkup tax : taxAndMarkups){
+                int taxRate = tax.getFarePercentage();
+                rate += taxRate;
+            }
+
+            price = (int) (price*rate/100);
 
             TicketPayload ticketPayload = new TicketPayload();
             ticketPayload.setFlight_id(request.getFlightId());

@@ -116,19 +116,7 @@ public class TicketPayload {
     }
 
     @Transient
-    public void setTotalPrice(int total_price, TaxAndMarkupRepository taxAndMarkupRepository) {
-        List<TaxAndMarkup> taxAndMarkups = taxAndMarkupRepository.findAll();
-
-        if (taxAndMarkups == null) {
-            this.totalPrice = total_price;
-            return;
-        }
-
-        for (TaxAndMarkup tax : taxAndMarkups){
-            int taxRate = tax.getFarePercentage();
-            total_price += totalPrice*taxRate/100;
-        }
-
+    public void setTotalPrice(int total_price) {
         this.totalPrice = total_price;
     }
 
