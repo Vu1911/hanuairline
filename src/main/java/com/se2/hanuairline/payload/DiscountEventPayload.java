@@ -13,7 +13,7 @@ public class DiscountEventPayload {
 
     @NotBlank
     @NotNull
-    private int discount_rate_percentage;
+    private double discount_rate_percentage;
 
     public DiscountEventPayload(Long id, @NotBlank @NotNull int discount_rate_percentage) {
         this.id = id;
@@ -28,7 +28,7 @@ public class DiscountEventPayload {
         this.id = id;
     }
 
-    public int getDiscount_rate_percentage() {
+    public double getDiscount_rate_percentage() {
         return discount_rate_percentage;
     }
 

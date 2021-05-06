@@ -65,7 +65,7 @@ public class Flight extends DateAudit implements Cloneable {
     @JoinTable(name = "Flight_discount",
             joinColumns = @JoinColumn(name = "flight_id"),
             inverseJoinColumns = @JoinColumn(name = "discount_id"))
-    @Nullable
+    //@Nullable
     private Set<DiscountEvent> discount;
 
     @Transient
