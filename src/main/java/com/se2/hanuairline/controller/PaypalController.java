@@ -92,8 +92,8 @@ public class PaypalController {
 
 
             Payment payment = service.createPayment(orderPayload.getPrice(), orderPayload.getCurrency(), orderPayload.getMethod(),
-                    orderPayload.getIntent(), orderPayload.getDescription(), "http://hanuairline.azurewebsites.net/payment" + CANCEL_URL + "/" + order.getOrderId(),
-                    "http://hanuairline.azurewebsites.net/payment/" + SUCCESS_URL + "/" + order.getOrderId());
+                    orderPayload.getIntent(), orderPayload.getDescription(), "http://localhost:8080/payment" + CANCEL_URL + "/" + order.getOrderId(),
+                    "http://localhost:8080/payment/" + SUCCESS_URL + "/" + order.getOrderId());
             for (Links link : payment.getLinks()) {
                 if (link.getRel().equals("approval_url")) {
 
@@ -107,7 +107,7 @@ public class PaypalController {
             // create Order over here but not saved to database
             // OrderPayload orderPayload = new
             //this.orderPayload=OrderPayLoad
-           System.out.println(e.getMessage());
+           return (e.getMessage());
         }
         return "redirect:/";
     }
@@ -141,9 +141,12 @@ public class PaypalController {
                 return "success";
             }
         } catch (PayPalRESTException e) {
-            return e.getMessage();
+            System.out.println("here");
+            return "from thanh" + e.getMessage();
         } catch (InvalidInputValueException | MessagingException e) {
-            return e.getMessage();
+            return "from me" + e.getMessage();
+        } catch (Exception e){
+            return "me fail";
         }
         return "redirect:/";
     }
