@@ -52,7 +52,7 @@ public class TicketController {
         try {
             Optional<Ticket> ticket = ticketRepository.findById(id);
 
-            if(ticket.isPresent()){
+            if(!ticket.isPresent()){
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
 
