@@ -35,11 +35,12 @@ public class FlightController {
     @Autowired
     private EmailService emailService;
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAllFlight(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<?> getAllFlight(@RequestParam(required = false, defaultValue = "false") boolean saleFlightOnly,
+                                          @RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
                                           @RequestParam(defaultValue = "id,desc") String[] sort) {
         try {
-            Page<Flight> flights = flightService.getAll(page, size, sort);
+            Page<Flight> flights = flightService.getAll(saleFlightOnly, page, size, sort);
             return new ResponseEntity<>(flights, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

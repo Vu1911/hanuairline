@@ -6,13 +6,16 @@ import com.se2.hanuairline.model.airport.Airway;
 import com.se2.hanuairline.model.airport.Gate;
 import com.se2.hanuairline.model.audit.DateAudit;
 import com.se2.hanuairline.model.user.User;
+import com.se2.hanuairline.repository.TaxAndMarkupRepository;
 import com.sun.istack.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "ticket")
@@ -44,6 +47,7 @@ public class Ticket extends DateAudit implements Cloneable, Serializable {
 
     @Transient
     private int totalPrice;
+
 
     public Ticket() {
 
@@ -93,7 +97,20 @@ public class Ticket extends DateAudit implements Cloneable, Serializable {
         return totalPrice;
     }
 
-    public void setTotalPrice(int total_price) {
+    @Transient
+    public void setTotalPrice(int total_price, TaxAndMarkupRepository taxAndMarkupRepository) {
+        List<TaxAndMarkup> taxAndMarkups = taxAndMarkupRepository.findAll();
+
+        if (taxAndMarkups == null) {
+            this.totalPrice = total_price;
+            return;
+        }
+
+        for (TaxAndMarkup tax : taxAndMarkups){
+            int taxRate = tax.getFarePercentage();
+            total_price += totalPrice*taxRate/100;
+        }
+
         this.totalPrice = total_price;
     }
 

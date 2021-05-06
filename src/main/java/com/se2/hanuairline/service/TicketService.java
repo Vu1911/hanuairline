@@ -11,6 +11,7 @@ import com.se2.hanuairline.model.user.User;
 import com.se2.hanuairline.payload.CartPayload;
 import com.se2.hanuairline.payload.GetTicketPricePayload;
 import com.se2.hanuairline.payload.TicketPayload;
+import com.se2.hanuairline.repository.TaxAndMarkupRepository;
 import com.se2.hanuairline.repository.TicketRepository;
 import com.se2.hanuairline.security.JwtTokenProvider;
 import com.se2.hanuairline.service.aircraft.AircraftSeatService;
@@ -57,6 +58,9 @@ public class TicketService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    public TaxAndMarkupRepository taxAndMarkupRepository;
+
 //    public int getNumberOfTicketsByFlightId(Long flight_id){
 //        return ticketRepository.countByFlight_Id(flight_id);
 //    }
@@ -89,6 +93,7 @@ public class TicketService {
         ticket.setAircraftSeat(aircraftSeat);
         ticket.setStatus(TicketStatus.BOOKED);
         ticket.setType(request.getType());
+        ticket.setTotalPrice(request.getTotalPrice(), taxAndMarkupRepository);
 
         Ticket _ticket = ticketRepository.save(ticket);
         emailService.verifyTicketByEmail(ticket);

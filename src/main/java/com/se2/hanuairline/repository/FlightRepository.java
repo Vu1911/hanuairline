@@ -21,6 +21,8 @@ public interface FlightRepository extends JpaRepository<Flight, Long>, CrudRepos
 
     Page<Flight> findAll(Pageable pageable);
 
+    Page<Flight> findAllByDiscountIsNotNull (Pageable pageable);
+
     // Find all flight distinct by aircraft sorted by the latest departure time
     // has the arrival time less than the given time and the arrival airport id is the given airport
     Optional<Flight> findById(Long id);

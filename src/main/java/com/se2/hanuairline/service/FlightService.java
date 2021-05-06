@@ -132,9 +132,15 @@ public class FlightService {
 
 
     }
-    public Page<Flight> getAll(int page, int size, String[] sort){
+    public Page<Flight> getAll(boolean saleFlightOnly, int page, int size, String[] sort){
         Pageable pagingSort = PaginationUtils.pagingSort(page, size, sort);
-        return flightRepository.findAll(pagingSort);
+        if (!saleFlightOnly){
+            return flightRepository.findAll(pagingSort);
+        } else {
+            return flightRepository.findAllByDiscountIsNotNull(pagingSort);
+        }
+
+
     }
 
     public Flight getById(Long id) {

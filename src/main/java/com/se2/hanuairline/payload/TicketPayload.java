@@ -2,16 +2,20 @@ package com.se2.hanuairline.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.se2.hanuairline.model.Flight;
+import com.se2.hanuairline.model.TaxAndMarkup;
 import com.se2.hanuairline.model.TicketStatus;
 import com.se2.hanuairline.model.TicketType;
 import com.se2.hanuairline.model.aircraft.AircraftSeat;
 import com.se2.hanuairline.model.user.User;
+import com.se2.hanuairline.repository.TaxAndMarkupRepository;
 import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+
 @ToString
 @Data
 @JsonIgnoreProperties
@@ -111,8 +115,21 @@ public class TicketPayload {
         return totalPrice;
     }
 
-    public void setTotalPrice(int totalPrice) {
-        this.totalPrice = totalPrice;
+    @Transient
+    public void setTotalPrice(int total_price, TaxAndMarkupRepository taxAndMarkupRepository) {
+        List<TaxAndMarkup> taxAndMarkups = taxAndMarkupRepository.findAll();
+
+        if (taxAndMarkups == null) {
+            this.totalPrice = total_price;
+            return;
+        }
+
+        for (TaxAndMarkup tax : taxAndMarkups){
+            int taxRate = tax.getFarePercentage();
+            total_price += totalPrice*taxRate/100;
+        }
+
+        this.totalPrice = total_price;
     }
 
     @Override

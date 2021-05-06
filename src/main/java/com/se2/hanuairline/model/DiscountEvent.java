@@ -1,6 +1,7 @@
 package com.se2.hanuairline.model;
 
 import com.se2.hanuairline.model.audit.DateAudit;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ public class DiscountEvent extends DateAudit implements Cloneable {
     private int discountRate;
 
     @ManyToMany(mappedBy = "discount",cascade = {CascadeType.REMOVE})
+    @JsonIgnore
     private Set<Flight> flight;
 
     public DiscountEvent(@NotBlank @NotNull int discountRate) {
