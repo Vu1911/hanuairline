@@ -106,7 +106,7 @@ public class FlightController {
             }
             return new ResponseEntity<>("update time is conflict!", HttpStatus.CONFLICT);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.toString(), HttpStatus.CONFLICT);
         }
     }
     // tu flight id -> tra lai tat ca cac ghe ngoi + status
