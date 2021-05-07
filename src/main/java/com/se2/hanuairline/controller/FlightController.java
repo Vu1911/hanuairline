@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.se2.hanuairline.payload.FlightUpdatePayload;
 import com.se2.hanuairline.payload.output.AircraftSeatOutputPayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -98,7 +99,7 @@ public class FlightController {
 
 
     @PutMapping("/admin/updateTime/{id}")
-    public ResponseEntity<?> updateTimeFlight(@Valid @RequestBody FlightPayload flight, @PathVariable Long id) {
+    public ResponseEntity<?> updateTimeFlight(@Valid @RequestBody FlightUpdatePayload flight, @PathVariable Long id) {
     	try {
             if(flightService.updateTimeFlight(id, flight.getDeparture_time(), flight.getArrival_time(), flight.getArrival_gate_id(), flight.getArrival_gate_id())){
                 emailService.updateTimeThenSendEmail(flightService.getById(id));
