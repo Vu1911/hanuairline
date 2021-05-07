@@ -3,6 +3,7 @@ package com.se2.hanuairline.service;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.se2.hanuairline.model.*;
 import com.se2.hanuairline.model.aircraft.AircraftSeat;
@@ -541,13 +542,16 @@ public class FlightService {
     }
 
     @Transactional
-    public boolean updateTimeFlight(Long id, Instant departureTime, Instant arrivalTime, Long departureGateId, Long arrivalGateId) {
+    public boolean updateTimeFlight(Long id, Instant departureTime, Instant arrivalTime, Long departureGateId, Long arrivalGateId) throws InvalidInputValueException {
     	if(validateTimeAndGate(departureTime, arrivalTime, departureGateId, arrivalGateId)) {
     		Flight flight = getById(id);
-        	flight.setDepartureTime(departureTime);
-        	flight.setArrivalTime(arrivalTime);
-        	flightRepository.save(flight);
-        	return true;
+    		if (validateUpdateTime(flight, arrivalTime, departureTime)){
+                flight.setDepartureTime(departureTime);
+                flight.setArrivalTime(arrivalTime);
+                flightRepository.save(flight);
+                return true;
+            }
+        	return false;
     	}
     	return false;
     }
@@ -561,6 +565,57 @@ public class FlightService {
         return;
     }
 
+    private boolean validateUpdateTime (Flight flight, Instant arrivalTime, Instant dipartureTime) throws InvalidInputValueException {
+        Aircraft aircraft = flight.getAircraft();
+        Long flightId = flight.getId();
+        Set<Flight> flightSet = aircraft.getFlights();
 
+        if (flightSet.size() <= 1){
+            return true;
+        }
+
+        List<Flight> flightList = flightSet.stream()
+                .sorted(Comparator.comparing(Flight::getId))
+                .collect(Collectors.toList());
+
+
+
+        Flight nextFlight = null;
+        Flight previousFlight = null;
+
+        int index = 0;
+        for(Flight f : flightList){
+            System.out.println(f.getId());
+            if (f.getId() == flightId){
+                break;
+            }
+            index++;
+        }
+
+        if (index == 0){
+            nextFlight = flightList.get(index + 1);
+
+            if (arrivalTime.compareTo(nextFlight.getDepartureTime()) > 0){
+                throw new InvalidInputValueException("the given arrival time is conflict with the next flight time of this aircraft");
+            }
+        } else if (index == flightList.size() - 1){
+            previousFlight = flightList.get(index - 1);
+
+            if (dipartureTime.compareTo(previousFlight.getArrivalTime().plusSeconds(3600)) < 0){
+                throw new InvalidInputValueException("the given departure time should be 1 hour later from the last arrival time of this aircraft");
+            }
+        } else {
+            nextFlight = flightList.get(index + 1);
+            previousFlight = flightList.get(index - 1);
+            if (arrivalTime.compareTo(nextFlight.getDepartureTime()) > 0){
+                throw new InvalidInputValueException("the given arrival time is conflict with the next flight time of this aircraft");
+            }
+            if (dipartureTime.compareTo(previousFlight.getArrivalTime().plusSeconds(3600)) < 0){
+                throw new InvalidInputValueException("the given departure time should be 1 hour later from the last arrival time of this aircraft");
+            }
+        }
+
+        return true;
+    }
 
 }
