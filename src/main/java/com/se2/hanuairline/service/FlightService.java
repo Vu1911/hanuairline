@@ -162,8 +162,6 @@ public class FlightService {
         Optional<Gate> arrival_gateData = gateRepository.findById(request.getArrival_gate_id());
         Optional<Gate> departure_gateData = gateRepository.findById(request.getDeparture_gate_id());
 
-        DiscountEvent discountEvent = discountEventService.getById(request.getDiscount_id());
-        System.out.println("DISCOUNT : " +discountEvent);
 
 
         // check duplication
