@@ -26,7 +26,6 @@ import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.mail.MessagingException;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -122,7 +121,7 @@ public class PaypalController {
 
     // if succcess
     @GetMapping(SUCCESS_URL+"/{id}")
-    public ResponseEntity<?> successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId,@PathVariable("id") Long orderId) {
+    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId,@PathVariable("id") Long orderId) {
             System.out.println("IN here");
 //        return "redirect:/success.html";
         try {
@@ -138,20 +137,18 @@ public class PaypalController {
                   }
 
               }
-                URI userWeb = new URI("https://hanu-airline-app.web.app/");
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.setLocation(userWeb);
-                return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+
+                return "redirect:hanu-airline-app.web.app/";
             }
         } catch (PayPalRESTException e) {
             System.out.println("here");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return "from thanh" + e.getMessage();
         } catch (InvalidInputValueException | MessagingException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return "from me" + e.getMessage();
         } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return e.getMessage();
         }
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return "redirect:/";
     }
 
     private List<Order> getDataFromOrderAPI() {
