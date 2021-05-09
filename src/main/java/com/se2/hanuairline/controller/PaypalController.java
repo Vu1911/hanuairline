@@ -26,7 +26,6 @@ import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.mail.MessagingException;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -54,8 +53,8 @@ public class PaypalController {
     public static final String SUCCESS_URL = "pay/success";
     public static final String CANCEL_URL = "pay/cancel";
     // it worked
-    public static final String ORDER_API = "https://sheetdb.io/api/v1/xkc9txpjhp07f";
-    public static final String TICKET_API = "https://sheetdb.io/api/v1/n51xoi9px5enj";
+    public static final String ORDER_API = "https://sheetdb.io/api/v1/02doy65jmii53";
+    public static final String TICKET_API = "https://sheetdb.io/api/v1/zrmouj40lgkwf";
 
     @GetMapping("/test")
     public String home() {
@@ -122,7 +121,7 @@ public class PaypalController {
 
     // if succcess
     @GetMapping(SUCCESS_URL+"/{id}")
-    public ResponseEntity<?> successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId,@PathVariable("id") Long orderId) {
+    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId,@PathVariable("id") Long orderId) {
             System.out.println("IN here");
 //        return "redirect:/success.html";
         try {
@@ -138,20 +137,18 @@ public class PaypalController {
                   }
 
               }
-                URI userWeb = new URI("https://hanu-airline-app.web.app/");
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.setLocation(userWeb);
-                return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+
+                return "redirect:https://hanu-airline-app.web.app/";
             }
         } catch (PayPalRESTException e) {
             System.out.println("here");
-            return new ResponseEntity<>(("from thanh" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return "from thanh" + e.getMessage();
         } catch (InvalidInputValueException | MessagingException e) {
-            return new ResponseEntity<>(("from me" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return "from me" + e.getMessage();
         } catch (Exception e){
-            return new ResponseEntity<>(("from me" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return e.getMessage();
         }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return "redirect:/";
     }
 
     private List<Order> getDataFromOrderAPI() {
