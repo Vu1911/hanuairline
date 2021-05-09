@@ -138,7 +138,7 @@ public class PaypalController {
 
               }
 
-                return "success";
+                return "redirect:https://hanuairline4c.azurewebsites.net";
             }
         } catch (PayPalRESTException e) {
             System.out.println("here");
