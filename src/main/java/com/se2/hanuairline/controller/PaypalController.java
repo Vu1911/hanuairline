@@ -92,8 +92,8 @@ public class PaypalController {
 
 
             Payment payment = service.createPayment(orderPayload.getPrice(), orderPayload.getCurrency(), orderPayload.getMethod(),
-                    orderPayload.getIntent(), orderPayload.getDescription(), "https://hanuairline4c.azurewebsites.net/payment" + CANCEL_URL + "/" + order.getOrderId(),
-                    "https://hanuairline4c.azurewebsites.net/payment" + SUCCESS_URL + "/" + order.getOrderId());
+                    orderPayload.getIntent(), orderPayload.getDescription(), "https://hanuairline4c.azurewebsites.net/payment/" + CANCEL_URL + "/" + order.getOrderId(),
+                    "https://hanuairline4c.azurewebsites.net/payment/" + SUCCESS_URL + "/" + order.getOrderId());
             for (Links link : payment.getLinks()) {
                 if (link.getRel().equals("approval_url")) {
 
