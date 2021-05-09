@@ -138,7 +138,7 @@ public class PaypalController {
 
               }
 
-                return "redirect:hanu-airline-app.web.app/";
+                return "redirect:https://hanu-airline-app.web.app/";
             }
         } catch (PayPalRESTException e) {
             System.out.println("here");
