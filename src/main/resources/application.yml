@@ -16,8 +16,8 @@ spring:
                 enable: true
 
   datasource:
-    url: jdbc:mysql://hanuairlineserver.mysql.database.azure.com:3306/hanuairlinedb?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&zerodatetimebehavior=Converttonull
-    username: hanuadmin@hanuairlineserver
+    url: jdbc:mysql://hanuairline4c.mysql.database.azure.com:3306/hanuairlinedb?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&zerodatetimebehavior=Converttonull
+    username: hanuadmin@hanuairline4c
     password: hanu4C18
     initialization-mode: always
 
